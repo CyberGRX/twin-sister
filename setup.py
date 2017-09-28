@@ -44,7 +44,7 @@ def version_number():
 setup(name='twin_sister',
       version=version_number(),
       description='Simplifies dependency injection',
-      url='git@gitlab.int.protectwise.net:testing/twin-sister.git',
+      url='https://github.com/protectwise/twin-sister',
       author='Mike Duskis',
       author_email='mike.duskis@protectwise.com',
       license='',
