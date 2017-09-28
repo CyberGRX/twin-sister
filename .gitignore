@@ -1,0 +1,16 @@
+**.pyc
+*.log
+*.swp
+.idea
+.cache
+__pycache__
+*egg*
+Vagrantfile
+.vagrant
+*.xml
+*reports/
+/dist
+creds.sh
+/coverage_report
+/build
+/tmp
