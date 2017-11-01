@@ -6,9 +6,27 @@ from .singleton_class import SingletonClass
 class DependencyContext:
 
     def __init__(self):
+        self._attached_threads = []
         self._injected = {}
 
+    def attach_to_thread(self, thread_object):
+        """
+        Attach this context to a thread.
+        After attachment, calls to "dependency" inside the thread
+          will use this context.
+
+        thread_object -- (Thread) Attach to this thread
+        """
+        thread_id = thread_object.ident
+        if not thread_id:
+            raise RuntimeError('A running thread is required.')
+        DependencyRegistry.register(
+            context=self, thread_id=thread_id)
+        self._attached_threads.append(thread_id)
+
     def close(self):
+        for t in self._attached_threads:
+            DependencyRegistry.unregister(self, thread_id=t)
         DependencyRegistry.unregister(self)
 
     def get(self, dependency):

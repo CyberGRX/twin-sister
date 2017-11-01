@@ -13,8 +13,9 @@ class DependencyRegistry:
         return None
 
     @classmethod
-    def register(cls, context):
-        thread_id = get_thread_id()
+    def register(cls, context, *, thread_id=None):
+        if thread_id is None:
+            thread_id = get_thread_id()
         if thread_id not in cls._context_stacks:
             cls._context_stacks[thread_id] = []
         cls._context_stacks[thread_id].append(context)
@@ -25,8 +26,9 @@ class DependencyRegistry:
         cls._context_stacks = {}
 
     @classmethod
-    def unregister(cls, context):
-        thread_id = get_thread_id()
+    def unregister(cls, context, *, thread_id=None):
+        if thread_id is None:
+            thread_id = get_thread_id()
         cls._context_stacks[thread_id].remove(context)
 
 
