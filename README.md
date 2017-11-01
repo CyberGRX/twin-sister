@@ -99,15 +99,15 @@ returns the real thing.  In this way, the system will behave sensibly whether
 injection has occurred or not.
 
 
-## Injecting a dependency with Twin Sister
+# Injecting a dependency with Twin Sister
 
-### Installation
+## Installation
 
 ```
 python setup.py install
 ```
 
-### Generic technique to inject any object as a dependency
+## Generic technique to inject any object as a dependency
 
 ```
 from twin_sister import dependency, dependency_context
@@ -134,7 +134,7 @@ requests for `Horse` will return `FakeHorse`.  Outside the context
 (after the `with` statement), requests for `Horse` will return `Horse`.
 
 
-### Special technique: "classes" that always produce the same object
+## Special technique: "classes" that always produce the same object
 
 ```
 with dependency_context as context:
@@ -154,7 +154,7 @@ fresh_horse = dependency(Horse)()
 fresh_horse will be the same old eric_the_horse.
 
 
-### Support for xUnit test pattern
+## Support for xUnit test pattern
 
 Instead of using a context manager, a test can open and close its
 dependency context explicitly:
