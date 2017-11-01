@@ -156,8 +156,8 @@ fresh_horse will be the same old eric_the_horse.
 
 ### Support for xUnit test pattern
 
-Instead of using a context manager, a dependency context can be opened
-and closed explicitly:
+Instead of using a context manager, a test can open and close its
+dependency context explicitly:
 
 
 ```
