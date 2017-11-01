@@ -221,7 +221,7 @@ time_travel.advance(hours=24)
 sleep(0.05)  # Give target a chance to cycle
 expect(time_travel.exception_caught).to(be_a(TimeoutError))
 
-# Verify that the function does not time out befor 24 hours
+# Verify that the function does not time out before 24 hours
 time_travel = TimeController(target=some_function_i_want_to_test)
 time_travel.start()
 time_travel.advance(hours=24 - 0.0001)
