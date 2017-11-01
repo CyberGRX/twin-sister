@@ -170,7 +170,7 @@ class MyTest(TestCase):
     self.dependencies = open_dependency_context()
 
   def tearDown(self):
-    self.dependencies_close()
+    self.dependencies.close()
 
   def test_something(self):
     self.dependencies.inject(Horse, FakeHorse)
