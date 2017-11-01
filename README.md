@@ -178,3 +178,71 @@ class MyTest(TestCase):
     expect(outcome).to(equal('Cardinal Ximinez'))
 
 ```
+
+## Support for multi-threaded tests
+
+By default, Twin Sister maintains a separate dependency context for each thread.
+This allows test cases with different dependency schemes to run in parallel
+without affecting each other.
+
+However, it also provides a mechanism to attach a dependency context to a running
+thread:
+
+```
+my_thread = Thread(target=spam)
+my_thread.start()
+
+with dependency_context as context:
+  context.attach_to_thread(my_thread)
+  ...
+```
+
+The usual rules about context scope apply.  Even if the thread continues to run,
+the context will disappear after the `with` statement ends.
+
+
+## Controlling time
+
+Sometimes it is useful -- or even necessary -- for a test case to
+control time as its perceived by the system under test.  The classic example
+is a routine that times out after a specified duration has elapsed.  Thorough
+testing should cover both sides of the boundary, but it is usually undesirable
+or impractical to wait for the duration to elapse.  That is where TimeController
+comes in.  It's a self-contained way to inject a fake datetime.datetime:
+
+```
+from expects import expect, be_a, be_none
+from twin_sister import TimeController
+
+# Verify that the function times out after 24 hours
+time_travel = TimeController(target=some_function_i_want_to_test)
+time_travel.start()
+time_travel.advance(hours=24)
+sleep(0.05)  # Give target a chance to cycle
+expect(time_travel.exception_caught).to(be_a(TimeoutError))
+
+# Verify that the function does not time out befor 24 hours
+time_travel = TimeController(target=some_function_i_want_to_test)
+time_travel.start()
+time_travel.advance(hours=24 - 0.0001)
+sleep(0.05)  # Give target a chance to cycle
+expect(time_travel.exception_caught).to(be_none)
+```
+
+The example above checks for the presence or absence of an exception, but it
+is possible to check _any_ state.  For example, let's check the impact of
+a long-running bound method on its object:
+
+```
+time_travel = TimeController(target=thing.monitor_age)
+time_travel.start()
+time_travel.advance(days=30)
+sleep(0.05)
+expect(thing.age_in_days).to(equal(30))
+time_travel.advance(days=30)
+sleep(0.05)
+expect(thing.age_in_days).to(equal(60))
+```
+
+There are limitations.  The fake datetime affects only .now() and .utcnow()
+at present.  This may change in a future release as needs arise.
