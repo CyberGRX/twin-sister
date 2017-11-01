@@ -67,8 +67,8 @@ to separation of concerns.
 In theory, it would be possible to make _all_ HTTP clients fake by redirecting
 HttpClient in the global symbol table to FakeHttpClient.  This approach has
 the advantage of not requiring the targeted code to be aware of the injection
-and is likely to be highly effective if successful, it suffers from major drawbacks.
-The symtable module (sensibly) does not permit write access, so redirection would
+and is likely to be highly effective if successful. It suffers from major drawbacks,
+however. The symtable module (sensibly) does not permit write access, so redirection would
 need to be performed at a lower level which would break compatibility across
 Python implementations. It's also an extreme hack with potentially serious side
 effects.
