@@ -50,5 +50,7 @@ setup(name='younger_twin_sister',
       packages=find_packages(),
       include_package_data=True,
       exclude_package_data={'': ['tests']},
+      install_requires=[
+        'expects>=0.8.0'],
       cmdclass={'test': TestRunner},
       )
