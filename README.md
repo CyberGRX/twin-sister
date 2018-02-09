@@ -244,5 +244,16 @@ sleep(0.05)
 expect(thing.age_in_days).to(equal(60))
 ```
 
+We can also check the return value of the target function:
+
+```
+expected = 42
+time_travel = TimeController(target=lambda: expected)
+time_travel_start()
+time_travel.join()
+expect(time_travel.value_returned).to(equal(expected))
+```
+
+
 There are limitations.  The fake datetime affects only .now() and .utcnow()
 at present.  This may change in a future release as needs arise.
