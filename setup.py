@@ -5,7 +5,7 @@ import sys
 from setuptools import Command, setup, find_packages
 
 MAJOR_VERSION = 1
-MINOR_VERSION = 1
+MINOR_VERSION = 2
 PATCH_VERSION = 0
 
 # Environment variable into which CI places the build ID

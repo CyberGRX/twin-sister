@@ -22,6 +22,7 @@ class TimeController(Thread):
         super().__init__(**kwargs)
         self.fake_datetime = FakeDatetime()
         self.exception_caught = None
+        self.value_returned = None
 
     def advance(self, **kwargs):
         """Advance the fake clock by the given interval
@@ -39,6 +40,6 @@ class TimeController(Thread):
             context.inject(datetime, self.fake_datetime)
             context.attach_to_thread(self)
             try:
-                self._target()
+                self.value_returned = self._target()
             except Exception as e:
                 self.exception_caught = e

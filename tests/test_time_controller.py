@@ -44,6 +44,13 @@ class TestTimeController(TestCase):
         sut.join()
         expect(sut.exception_caught).to(equal(exception_raised))
 
+    def test_stores_return_value(self):
+        expected = 42
+        sut = TimeController(target=lambda: expected, daemon=True)
+        sut.start()
+        sut.join()
+        expect(sut.value_returned).to(equal(expected))
+
     def test_thread_is_daemonic_by_default(self):
         sut = TimeController(target=print)
         expect(sut.daemon).to(be_true)
