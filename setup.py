@@ -52,6 +52,7 @@ setup(name='younger_twin_sister',
       exclude_package_data={'': ['tests']},
       install_requires=[
         'expects>=0.8.0',
+        'twine>=1.9.1',
         'wheel>=0.3.0'],
       cmdclass={'test': TestRunner},
       )
