@@ -41,12 +41,11 @@ def version_number():
     return '%d.%d.%d.%d' % (MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, build)
 
 
-setup(name='twin_sister',
+setup(name='younger_twin_sister',
       version=version_number(),
       description='Simplifies dependency injection',
-      url='https://github.com/protectwise/twin-sister',
       author='Mike Duskis',
-      author_email='mike.duskis@protectwise.com',
+      author_email='mike.duskis@cybergrx.com',
       license='',
       packages=find_packages(),
       include_package_data=True,

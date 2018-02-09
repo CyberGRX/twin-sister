@@ -80,7 +80,7 @@ that have been injected and then handles requests for dependencies.  In this way
 only code that requests a dependency explicity is affected by injection:
 
 ```
-from twin_sister import dependency
+from younger_twin_sister import dependency
 
 class Horse:
 
@@ -110,7 +110,7 @@ python setup.py install
 ## Generic technique to inject any object as a dependency
 
 ```
-from twin_sister import dependency, dependency_context
+from younger_twin_sister import dependency, dependency_context
 
 class Knight:
 
@@ -212,7 +212,7 @@ comes in.  It's a self-contained way to inject a fake datetime.datetime:
 
 ```
 from expects import expect, be_a, be_none
-from twin_sister import TimeController
+from younger_twin_sister import TimeController
 
 # Verify that the function times out after 24 hours
 time_travel = TimeController(target=some_function_i_want_to_test)

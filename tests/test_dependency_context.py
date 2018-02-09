@@ -2,7 +2,7 @@ from unittest import TestCase, main
 
 from expects import expect, be
 
-from twin_sister.dependency_context import DependencyContext
+from younger_twin_sister.dependency_context import DependencyContext
 
 
 class TestDependencyContext(TestCase):
