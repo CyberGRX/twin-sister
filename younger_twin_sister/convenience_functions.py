@@ -16,13 +16,19 @@ def dependency(dep):
 
 
 @contextmanager
-def dependency_context():
-    context = open_dependency_context()
+def dependency_context(parent=None):
+    """
+    parent -- inherit dependencies injected into this context
+    """
+    context = open_dependency_context(parent=parent)
     yield context
     context.close()
 
 
-def open_dependency_context():
-    context = DependencyContext()
+def open_dependency_context(parent=None):
+    """
+    parent -- inherit dependencies injected into this context
+    """
+    context = DependencyContext(parent=parent)
     DependencyRegistry.register(context)
     return context

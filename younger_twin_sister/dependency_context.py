@@ -5,9 +5,13 @@ from .singleton_class import SingletonClass
 
 class DependencyContext:
 
-    def __init__(self):
+    def __init__(self, parent=None):
+        """
+        parent -- Inherit dependencies injected into this context
+        """
         self._attached_threads = []
         self._injected = {}
+        self._parent = parent
 
     def attach_to_thread(self, thread_object):
         """
@@ -32,8 +36,9 @@ class DependencyContext:
     def get(self, dependency):
         if dependency in self._injected:
             return self._injected[dependency]
-        else:
-            return dependency
+        elif self._parent:
+            return self._parent.get(dependency)
+        return dependency
 
     def inject(self, dependency, injected):
         self._injected[dependency] = injected
