@@ -120,7 +120,7 @@ class Knight:
     self.guess = dependency(VELOCITY_OF_SOUTH_AFRICAN_SWALLOW)
 
 
-with dependency_context as context:
+with dependency_context() as context:
   context.inject(Horse, FakeHorse)
   context.inject(current_month, lambda: 'February')
   context.inject(VELOCITY_OF_SOUTH_AFRICAN_SWALLOW, 42)
@@ -137,7 +137,7 @@ requests for `Horse` will return `FakeHorse`.  Outside the context
 ## Special technique: "classes" that always produce the same object
 
 ```
-with dependency_context as context:
+with dependency_context() as context:
   eric_the_horse = FakeHorse()
   context.inject_as_class(Horse, eric_the_horse)
   lancelot = Knight()
@@ -192,7 +192,7 @@ thread:
 my_thread = Thread(target=spam)
 my_thread.start()
 
-with dependency_context as context:
+with dependency_context() as context:
   context.attach_to_thread(my_thread)
   ...
 ```
