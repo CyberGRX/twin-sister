@@ -5,12 +5,12 @@ import sys
 from setuptools import Command, setup, find_packages
 
 MAJOR_VERSION = 1
-MINOR_VERSION = 2
+MINOR_VERSION = 3
 PATCH_VERSION = 0
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
-CI_BUILD_ID = 'CI_BUILD_ID'
+CI_BUILD_ID = 'BUILD_NUMBER'
 
 
 class TestRunner(Command):
