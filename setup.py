@@ -1,5 +1,6 @@
 import os
-from setuptools import Command, setup, find_packages
+from setuptools import setup, find_packages
+from setuptools.command.test import test
 from unittest import TestLoader
 
 MAJOR_VERSION = 1
@@ -11,16 +12,9 @@ PATCH_VERSION = 0
 CI_BUILD_ID = 'BUILD_NUMBER'
 
 
-class TestRunner(Command):
-    user_options = []
+class TestRunner(test):
 
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
+    def run_tests(self):
         # If we perform this input at the top of the file, we get an
         # import error because we need to load this file to discover
         # dependenices.
