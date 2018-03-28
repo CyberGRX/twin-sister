@@ -54,6 +54,7 @@ setup(name='younger_twin_sister',
       install_requires=[
         'expects>=0.8.0',
         'twine>=1.9.1',
+        'unittest-xml-reporting-2.1.1',
         'wheel>=0.3.0'
         ],
       cmdclass={'test': TestRunner},
