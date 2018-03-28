@@ -1,11 +1,9 @@
 import os
-import subprocess
-import sys
-
 from setuptools import Command, setup, find_packages
+from unittest import TestLoader
 
 MAJOR_VERSION = 1
-MINOR_VERSION = 3
+MINOR_VERSION = 4
 PATCH_VERSION = 0
 
 # Environment variable into which CI places the build ID
@@ -23,10 +21,13 @@ class TestRunner(Command):
         pass
 
     def run(self):
-        python = sys.executable
-        p = subprocess.run(
-            (python, '-m', 'unittest', 'discover', '-s', 'tests'))
-        exit(p.returncode)
+        # If we perform this input at the top of the file, we get an
+        # import error because we need to load this file to discover
+        # dependenices.
+        from xmlrunner import XMLTestRunner
+        tests = TestLoader().discover('tests', pattern='test_*.py')
+        runner = XMLTestRunner(output='reports')
+        runner.run(tests)
 
 
 def set_build_number_from_ci_environment():
@@ -53,6 +54,7 @@ setup(name='younger_twin_sister',
       install_requires=[
         'expects>=0.8.0',
         'twine>=1.9.1',
-        'wheel>=0.3.0'],
+        'wheel>=0.3.0'
+        ],
       cmdclass={'test': TestRunner},
       )

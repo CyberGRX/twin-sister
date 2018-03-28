@@ -28,6 +28,7 @@ node {
         pip3.6 install -r requirements.txt
         python3.6 setup.py test
         """)
+        junit 'reports/*.xml'
     }
 
     grxStage('Build Library') {
