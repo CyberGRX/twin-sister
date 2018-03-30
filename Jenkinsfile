@@ -45,6 +45,7 @@ pipeline{
             """
             )
           } // grxUploadPipLibrary
+        } // steps
       } // stage: build and deploy
   } // stages
 } // pipeline
