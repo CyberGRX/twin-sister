@@ -10,7 +10,7 @@ class DependencyContext:
         parent -- Inherit dependencies injected into this context
         """
         self._attached_threads = []
-        self._injected = {}
+        self._injected = []  # key/value tuples
         self._parent = parent
 
     def attach_to_thread(self, thread_object):
@@ -34,14 +34,18 @@ class DependencyContext:
         DependencyRegistry.unregister(self)
 
     def get(self, dependency):
-        if dependency in self._injected:
-            return self._injected[dependency]
-        elif self._parent:
+        for k, v in self._injected:
+            if k == dependency:
+                return v
+        if self._parent:
             return self._parent.get(dependency)
         return dependency
 
     def inject(self, dependency, injected):
-        self._injected[dependency] = injected
+        self._injected = [
+            (k, v) for k, v in self._injected
+            if k != dependency]
+        self._injected.append((dependency, injected))
 
     def inject_as_class(self, dependency, injected):
         """
