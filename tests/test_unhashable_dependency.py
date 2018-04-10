@@ -14,6 +14,14 @@ class TestUnhashableDependency(TestCase):
             context.inject(os.environ, thing)
             expect(dependency(os.environ)).to(be(thing))
 
+    def test_survives_mutation(self):
+        with dependency_context() as context:
+            dep = ['spam', 'eggs', 'sausage']
+            thing = object()
+            context.inject(dep, thing)
+            dep.append('spam')
+            expect(dependency(dep)).to(be(thing))
+
 
 if '__main__' == __name__:
     main()
