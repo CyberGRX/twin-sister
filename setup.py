@@ -21,7 +21,8 @@ class TestRunner(test):
         from xmlrunner import XMLTestRunner
         tests = TestLoader().discover('tests', pattern='test_*.py')
         runner = XMLTestRunner(output='reports')
-        runner.run(tests)
+        result = runner.run(tests)
+        exit(0 if result.wasSuccessful() else 1)
 
 
 def set_build_number_from_ci_environment():
