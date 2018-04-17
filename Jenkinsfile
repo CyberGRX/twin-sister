@@ -28,8 +28,12 @@ pipeline{
           pip3.6 install -r requirements.txt
           python3.6 setup.py test
           """)
-          junit 'reports/*.xml'
         } // steps
+        post {
+          always {
+            junit 'reports/*.xml'
+          } // always
+        } // post
     } // stage: Run unit tests
 
     stage('Build and deploy') {
