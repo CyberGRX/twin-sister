@@ -4,7 +4,7 @@ from setuptools.command.test import test
 from unittest import TestLoader
 
 MAJOR_VERSION = 1
-MINOR_VERSION = 5
+MINOR_VERSION = 6
 PATCH_VERSION = 0
 
 # Environment variable into which CI places the build ID
@@ -48,6 +48,7 @@ setup(name='younger_twin_sister',
       exclude_package_data={'': ['tests']},
       install_requires=[
         'expects>=0.8.0',
+        'pyfakefs>=3.4.3',
         'twine>=1.9.1',
         'unittest-xml-reporting>=2.1.1',
         'wheel>=0.3.0'

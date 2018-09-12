@@ -1,17 +1,28 @@
-from .dependency_registry import DependencyRegistry
-from .fake_singleton import FakeSingleton
-from .singleton_class import SingletonClass
+import os
+
+from younger_twin_sister.dependency_registry import DependencyRegistry
+import younger_twin_sister.fake_fs as fake_fs
+from younger_twin_sister.fake_singleton import FakeSingleton
+from younger_twin_sister.singleton_class import SingletonClass
 
 
 class DependencyContext:
 
-    def __init__(self, *, parent=None):
+    def __init__(self, *, parent=None, supply_fs=False):
         """
         parent -- Inherit dependencies injected into this context
         """
         self._attached_threads = []
         self._injected = []  # key/value tuples
         self._parent = parent
+        if supply_fs:
+            self.fs = fake_fs.create_fs()
+            self.os = fake_fs.create_os(self.fs)
+            self.inject(os, self.os)
+            self.inject(os.path, self.os.path)
+            self.inject(open, fake_fs.create_open(self.fs))
+        else:
+            self.fs = None
 
     def attach_to_thread(self, thread_object):
         """
@@ -62,3 +73,20 @@ class DependencyContext:
         with an "instance" method which returns the injected object.
         """
         self.inject(dependency, FakeSingleton(injected))
+
+    def create_file(self, filename, *, content=None, text=None):
+        """
+        Create a file in the fake filesystem
+        filename -- (str) Full path to the new file
+        content -- (byte sequence) Write this binary content
+        text -- (str) Write this text content
+        """
+        if content and text:
+            raise TypeError('Content and text cannot both be specified')
+        path, _ = self.os.path.split(filename)
+        self.os.makedirs(path, exist_ok=True)
+        fd = self.os.open(filename, self.os.O_CREAT | self.os.O_WRONLY)
+        if content or text:
+            bytes_out = content or bytes(text, encoding='utf-8')
+            self.os.write(fd, bytes_out)
+        self.os.close(fd)
