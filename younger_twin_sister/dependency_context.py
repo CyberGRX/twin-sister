@@ -5,7 +5,7 @@ from .singleton_class import SingletonClass
 
 class DependencyContext:
 
-    def __init__(self, parent=None):
+    def __init__(self, *, parent=None):
         """
         parent -- Inherit dependencies injected into this context
         """
