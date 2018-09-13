@@ -6,23 +6,40 @@ from younger_twin_sister.fake_singleton import FakeSingleton
 from younger_twin_sister.singleton_class import SingletonClass
 
 
+class Passthrough:
+
+    def __init__(self, target):
+        self._target = target
+
+    def __getattr__(self, name):
+        return getattr(self._target, name)
+
+
 class DependencyContext:
 
-    def __init__(self, *, parent=None, supply_fs=False):
+    def __init__(self, *, parent=None, supply_env=False, supply_fs=False):
         """
         parent -- Inherit dependencies injected into this context
         """
         self._attached_threads = []
         self._injected = []  # key/value tuples
         self._parent = parent
+        self.fs = None
+        self.os = Passthrough(os)
         if supply_fs:
-            self.fs = fake_fs.create_fs()
-            self.os = fake_fs.create_os(self.fs)
-            self.inject(os, self.os)
-            self.inject(os.path, self.os.path)
-            self.inject(open, fake_fs.create_open(self.fs))
-        else:
-            self.fs = None
+            self._supply_fs()
+        if supply_env:
+            self._supply_env()
+        self.inject(os, self.os)
+
+    def _supply_fs(self):
+        self.fs = fake_fs.create_fs()
+        self.os = fake_fs.create_os(self.fs)
+        self.inject(os.path, self.os.path)
+        self.inject(open, fake_fs.create_open(self.fs))
+
+    def _supply_env(self):
+        self.os.environ = {}
 
     def attach_to_thread(self, thread_object):
         """

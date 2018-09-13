@@ -35,7 +35,9 @@ class TestFakeFilesystem(TestCase):
 
     def test_supplies_real_os_when_fake_not_requested(self):
         with dependency_context():
-            expect(dependency(os)).to(be(os))
+            # We don't care about the identity of os.
+            # We do care about the identity of its attributes.
+            expect(dependency(os).getpid).to(be(os.getpid))
 
     def test_references_refer_to_same_fake(self):
         fname = 'baloney.txt'
