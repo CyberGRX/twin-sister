@@ -1,10 +1,8 @@
-from functools import partial
 import os
 from unittest import TestCase, main
 
 from expects import expect, be, be_a, equal
 from pyfakefs import fake_filesystem as fakefs
-from questions_three.expects_matchers import complain
 
 from younger_twin_sister import dependency, dependency_context
 
@@ -84,9 +82,12 @@ class TestFakeFilesystem(TestCase):
             join = context.os.path.join
             path = join('somewhere', 'nice')
             context.create_file(join(path, 'a'), content=b'a')
-            expect(
-                partial(context.create_file, join(path, 'b'), content=b'b')
-                ).not_to(complain(FileExistsError))
+            caught = None
+            try:
+                context.create_file(join(path, 'b'), content=b'b')
+            except FileExistsError as e:
+                caught = e
+            expect(caught).to(equal(None))
 
     def test_create_file_accepts_strings(self):
         planted = 'some text'
@@ -105,9 +106,12 @@ class TestFakeFilesystem(TestCase):
 
     def test_complains_if_both_text_and_content(self):
         with dependency_context(supply_fs=True) as context:
-            expect(
-                partial(context.create_file, 's', content=b'a', text='b')).to(
-                complain(TypeError))
+            caught = None
+            try:
+                context.create_file('s', content=b'a', text='b')
+            except TypeError as e:
+                caught = e
+            expect(caught).not_to(equal(None))
 
 
 if '__main__' == __name__:
