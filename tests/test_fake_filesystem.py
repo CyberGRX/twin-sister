@@ -5,6 +5,7 @@ from expects import expect, be, be_a, equal
 from pyfakefs import fake_filesystem as fakefs
 
 from younger_twin_sister import dependency, dependency_context
+from younger_twin_sister.dependency_context import DependencyContext
 
 
 class TestFakeFilesystem(TestCase):
@@ -114,6 +115,13 @@ class TestFakeFilesystem(TestCase):
             except TypeError as e:
                 caught = e
             expect(caught).not_to(equal(None))
+
+    def test_complains_about_attempt_to_mix_with_parent_context(self):
+        try:
+            DependencyContext(parent=DependencyContext(), supply_fs=True)
+            assert False, 'No exception was raised'
+        except ValueError:
+            pass
 
 
 if '__main__' == __name__:

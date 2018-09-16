@@ -21,11 +21,20 @@ class DependencyContext:
         """
         parent -- Inherit dependencies injected into this context
         """
+        if parent:
+            if supply_env:
+                raise ValueError(
+                    'Cannot supply an environment if a parent context '
+                    'is specified')
+            if supply_fs:
+                raise ValueError(
+                    'Cannot supply a filesystem if a parent context '
+                    'is specified')
         self._attached_threads = []
         self._injected = []  # key/value tuples
         self._parent = parent
         self.fs = None
-        self.os = Passthrough(os)
+        self.os = parent.os if parent else Passthrough(os)
         if supply_fs:
             self._supply_fs()
         if supply_env:

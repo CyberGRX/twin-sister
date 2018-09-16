@@ -4,6 +4,7 @@ from unittest import TestCase, main
 from expects import expect, be, equal
 
 from younger_twin_sister import dependency, dependency_context
+from younger_twin_sister.dependency_context import DependencyContext
 
 
 class TestFakeEnviron(TestCase):
@@ -30,6 +31,19 @@ class TestFakeEnviron(TestCase):
     def test_supplies_real_environment_if_unset(self):
         with dependency_context():
             expect(dependency(os).environ).to(equal(os.environ))
+
+    def test_incompatible_with_specifified_parent_context(self):
+        try:
+            DependencyContext(
+                parent=DependencyContext(), supply_env=True)
+            assert False, 'No exception was raised'
+        except ValueError:
+            pass
+
+    def test_inherits_parent_context_os(self):
+        parent = DependencyContext(supply_env=True)
+        with dependency_context(parent=parent):
+            expect(dependency(os)).to(be(parent.os))
 
 
 if '__main__' == __name__:
