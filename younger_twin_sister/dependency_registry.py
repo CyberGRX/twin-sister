@@ -29,7 +29,12 @@ class DependencyRegistry:
     def unregister(cls, context, *, thread_id=None):
         if thread_id is None:
             thread_id = get_thread_id()
-        cls._context_stacks[thread_id].remove(context)
+        try:
+            cls._context_stacks[thread_id].remove(context)
+        except KeyError:
+            # Sometimes, cleanup can fail due to a race condition
+            # If it's gone, it's gone.  No need to raise an exception.
+            pass
 
 
 DependencyRegistry.reset()
