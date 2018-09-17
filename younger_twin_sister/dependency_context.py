@@ -116,3 +116,29 @@ class DependencyContext:
             bytes_out = content or bytes(text, encoding='utf-8')
             self.os.write(fd, bytes_out)
         self.os.close(fd)
+
+    def _assert_fake_env(self):
+        if self.os.environ is os.environ:
+            raise RuntimeError(
+                'Refusing to change the real environment.  '
+                'To use set_env or unset_env, specify supply_env=True '
+                'when creating the context.')
+
+    def set_env(self, **kwargs):
+        """
+        Set variables in the fake environment (if supplied)
+        Specify variables to set as keyword arguments
+          (e.g. set_env(spam='foo', eggs='bar')
+        """
+        self._assert_fake_env()
+        self.os.environ = dict(
+            self.os.environ,
+            **{k: str(v) for k, v in kwargs.items()})
+
+    def unset_env(self, key):
+        """
+        Remove a variable from the fake environment
+        key -- (str) The name of the variable to remove
+        """
+        self._assert_fake_env()
+        del self.os.environ[key]
