@@ -1,5 +1,5 @@
 import os
-from unittest import TestCase, main, skip
+from unittest import TestCase, main
 
 from expects import expect, equal
 
@@ -24,7 +24,6 @@ class TestUnsetEnv(TestCase):
             assert False, 'Caught nothing'
         except RuntimeError:
             pass
-
 
 
 if '__main__' == __name__:
