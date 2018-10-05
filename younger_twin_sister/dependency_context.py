@@ -1,40 +1,34 @@
+import logging
 import os
 
 from younger_twin_sister.dependency_registry import DependencyRegistry
 import younger_twin_sister.fake_fs as fake_fs
+from younger_twin_sister.fake_logging import FakeLogging
 from younger_twin_sister.fake_singleton import FakeSingleton
+from younger_twin_sister.passthrough import Passthrough
 from younger_twin_sister.singleton_class import SingletonClass
-
-
-class Passthrough:
-
-    def __init__(self, target):
-        self._target = target
-
-    def __getattr__(self, name):
-        return getattr(self._target, name)
 
 
 class DependencyContext:
 
-    def __init__(self, *, parent=None, supply_env=False, supply_fs=False):
+    def __init__(
+            self, *, parent=None, supply_env=False, supply_fs=False,
+            supply_logging=False):
         """
         parent -- Inherit dependencies injected into this context
         """
-        if parent:
-            if supply_env:
+        if parent and (supply_env or supply_fs or supply_logging):
                 raise ValueError(
-                    'Cannot supply an environment if a parent context '
-                    'is specified')
-            if supply_fs:
-                raise ValueError(
-                    'Cannot supply a filesystem if a parent context '
-                    'is specified')
+                    'Cannot supply a new environment, filesystem, or logging '
+                    'if a parent context.  We inherit fakes from the parent.')
         self._attached_threads = []
         self._injected = []  # key/value tuples
         self._parent = parent
         self.fs = None
+        self.logging = parent.logging if parent else None
         self.os = parent.os if parent else Passthrough(os)
+        if supply_logging:
+            self._supply_logging()
         if supply_fs:
             self._supply_fs()
         if supply_env:
@@ -49,6 +43,10 @@ class DependencyContext:
 
     def _supply_env(self):
         self.os.environ = {}
+
+    def _supply_logging(self):
+        self.logging = FakeLogging()
+        self.inject(logging, self.logging)
 
     def attach_to_thread(self, thread_object):
         """
