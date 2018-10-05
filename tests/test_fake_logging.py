@@ -1,12 +1,15 @@
 import logging
 from unittest import TestCase, main
+import sys
 
 from expects import expect, be, be_a, be_empty, contain, equal, have_length
 
 from younger_twin_sister import dependency, dependency_context
 from younger_twin_sister.dependency_context import DependencyContext
-from younger_twin_sister.fake_logging import FakeLogging
+import younger_twin_sister.fake_logging as fake_logging
 from younger_twin_sister.passthrough import Passthrough
+
+FakeLogging = fake_logging.FakeLogging
 
 
 class TestFakeLogging(TestCase):
@@ -38,6 +41,11 @@ class TestFakeLogging(TestCase):
 
     def test_fake_logger_returns_a_logger(self):
         expect(FakeLogging().fake_logger('')).to(be_a(logging.Logger))
+
+    def test_injects_fake_handler_as_streamhandler(self):
+        with dependency_context(supply_logging=True):
+            expect(dependency(logging).StreamHandler(stream=sys.stderr)).to(
+                be_a(fake_logging.FakeHandler))
 
     def test_fake_logger_has_provided_module_name(self):
         module_name = 'my_fancy_module'
