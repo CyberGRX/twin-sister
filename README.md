@@ -246,3 +246,38 @@ expect(thing.age_in_days).to(equal(60))
 
 There are limitations.  The fake datetime affects only .now() and .utcnow()
 at present.  This may change in a future release as needs arise.
+
+## Fake environment variables integration
+```
+real_path = os.environ['PATH']
+fake_path = 'something else'
+with dependency_context(fake_env=True) as context:
+  context.set_env(PATH=fake_path)
+  assert(dependency(os).environ['PATH']) == fake_path
+assert os.environ['PATH'] == real_path
+```
+
+
+## Fake filesystem (PyFakeFS) integration
+
+```
+with dependency_context(fake_fs=True):
+  filename = 'favorites.txt'
+  open = dependency(open)
+  with open(filename, 'w') as f:
+     f.write('some of my favorite things')
+  with open(filename, 'r') as f:
+     print('From the fake file: %s' % f.read())
+  assert dependency(os).path.exists(filename)
+assert not os.path.exists(filename)
+```
+
+## Fake log system integration
+```
+message = 'This goes only to the fake log'
+with dependency_context(fake_log=True) as context:
+  log = dependency(logging).getLogger(__name__)
+  log.error(message)
+  # fake_log.stored_records is a list of logging.LogRecord objects
+  assert context.fake_log.stored_records[0].msg == message
+```
