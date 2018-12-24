@@ -275,7 +275,7 @@ assert not os.path.exists(filename)
 ## Fake log system integration
 ```
 message = 'This goes only to the fake log'
-with dependency_context(supply_log=True) as context:
+with dependency_context(supply_logging=True) as context:
   log = dependency(logging).getLogger(__name__)
   log.error(message)
   # fake_log.stored_records is a list of logging.LogRecord objects
