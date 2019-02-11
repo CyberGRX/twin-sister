@@ -6,7 +6,7 @@ from setuptools import Command, setup, find_packages
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 0
-PATCH_VERSION = 1
+PATCH_VERSION = 2
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
@@ -41,6 +41,10 @@ def version_number():
     return '%d.%d.%d.%d' % (MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, build)
 
 
+with open('README.md', 'r') as f:
+    long_description = f.read()
+
+
 setup(name='twin_sister',
       version=version_number(),
       description='Gentle dependency injection',
@@ -48,6 +52,8 @@ setup(name='twin_sister',
       author='Mike Duskis',
       author_email='mike.duskis@cybergrx.com',
       license='',
+      long_description=long_description,
+      long_description_content_type='text/markdown',
       packages=find_packages(),
       include_package_data=True,
       exclude_package_data={'': ['tests']},
