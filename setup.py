@@ -4,9 +4,9 @@ import sys
 
 from setuptools import Command, setup, find_packages
 
-MAJOR_VERSION = 1
-MINOR_VERSION = 1
-PATCH_VERSION = 0
+MAJOR_VERSION = 2
+MINOR_VERSION = 0
+PATCH_VERSION = 1
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
@@ -43,10 +43,10 @@ def version_number():
 
 setup(name='twin_sister',
       version=version_number(),
-      description='Simplifies dependency injection',
-      url='https://github.com/protectwise/twin-sister',
+      description='Gentle dependency injection',
+      url='https://github.com/CyberGRX/twin-sister',
       author='Mike Duskis',
-      author_email='mike.duskis@protectwise.com',
+      author_email='mike.duskis@cybergrx.com',
       license='',
       packages=find_packages(),
       include_package_data=True,
