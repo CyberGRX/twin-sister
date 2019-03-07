@@ -18,9 +18,9 @@ class DependencyContext:
         parent -- Inherit dependencies injected into this context
         """
         if parent and (supply_env or supply_fs or supply_logging):
-                raise ValueError(
-                    'Cannot supply a new environment, filesystem, or logging '
-                    'if a parent context.  We inherit fakes from the parent.')
+            raise ValueError(
+                'Cannot supply a new environment, filesystem, or logging '
+                'if a parent context.  We inherit fakes from the parent.')
         self._attached_threads = []
         self._injected = []  # key/value tuples
         self._parent = parent
