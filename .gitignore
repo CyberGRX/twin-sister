@@ -14,3 +14,5 @@ creds.sh
 /coverage_report
 /build
 /tmp
+
+.terraform
