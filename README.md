@@ -251,7 +251,7 @@ at present.  This may change in a future release as needs arise.
 ```
 real_path = os.environ['PATH']
 fake_path = 'something else'
-with dependency_context(fake_env=True) as context:
+with dependency_context(supply_env=True) as context:
   context.set_env(PATH=fake_path)
   assert(dependency(os).environ['PATH']) == fake_path
 assert os.environ['PATH'] == real_path
