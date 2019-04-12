@@ -6,7 +6,7 @@ from setuptools import Command, setup, find_packages
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 0
-PATCH_VERSION = 2
+PATCH_VERSION = 4
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
@@ -58,4 +58,9 @@ setup(name='twin_sister',
       include_package_data=True,
       exclude_package_data={'': ['tests']},
       cmdclass={'test': TestRunner},
+      install_requires=[
+       'expects>=0.8.0',  # required by unit tests
+       'twine>=1.9.1',  # required by setup
+       'wheel>=0.30.0'  # required by setup
+	]
       )
