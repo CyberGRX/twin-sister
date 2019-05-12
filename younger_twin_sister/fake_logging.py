@@ -19,6 +19,11 @@ class FakeLogging(Passthrough):
         super().__init__(target=logging)
         self.stored_records = []
 
+        logger = self.fake_logger('')
+        for name in (
+                'critical', 'error', 'exception', 'warning', 'info', 'debug'):
+            setattr(self, name, getattr(logger, name))
+
     def StreamHandler(self, *args, **kwargs):
         return FakeHandler(fake_module=self)
 

@@ -101,6 +101,34 @@ class TestFakeLogging(TestCase):
         fake_module.reset()
         expect(fake_module.stored_records).to(be_empty)
 
+    def check_convenience_method(self, name):
+        fake = FakeLogging()
+        getattr(fake, name)('spam')
+        expect(fake.stored_records).to(have_length(1))
+        expect(fake.stored_records[0].levelname).to(
+            equal(name.upper()))
+
+    def test_convenience_critical(self):
+        self.check_convenience_method('critical')
+
+    def test_convenience_error(self):
+        self.check_convenience_method('error')
+
+    def test_convenience_warning(self):
+        self.check_convenience_method('warning')
+
+    def test_convenience_info(self):
+        self.check_convenience_method('info')
+
+    def test_convenience_debug(self):
+        self.check_convenience_method('debug')
+
+    def test_convenience_exception(self):
+        fake = FakeLogging()
+        fake.exception('spam')
+        expect(fake.stored_records).to(have_length(1))
+        expect(fake.stored_records[0].levelname).to(equal('ERROR'))
+
 
 if '__main__' == __name__:
     main()
