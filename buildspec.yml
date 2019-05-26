@@ -1,0 +1,24 @@
+version : 0.2
+
+env:
+  variables:
+    NEXUS_URL: "https://nexus.grx-dev.com/repository/pypi-internal/"
+    NEXUS_USERNAME: "admin"
+  parameter-store:
+    TOKEN: "/codebuild/apitoken"
+    NEXUS_PASSWORD: "/codebuild/nexus/helm-password"
+
+phases:
+  install:
+    commands:
+      - python3 -m pip install -r requirements.txt
+      - python3 setup.py develop
+  pre_build:
+    commands:
+      - python3 setup.py test
+  build:
+    commands:
+      - python3 setup.py bdist_wheel
+  post_build:
+    commands:
+      - ./upload_package_conditionally.sh

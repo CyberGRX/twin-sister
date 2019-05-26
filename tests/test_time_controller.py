@@ -4,7 +4,7 @@ from unittest import TestCase, main
 
 from expects import expect, be_false, be_true, equal, raise_error
 
-from twin_sister import TimeController, dependency
+from younger_twin_sister import TimeController, dependency
 
 
 class TestTimeController(TestCase):

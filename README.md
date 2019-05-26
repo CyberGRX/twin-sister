@@ -80,7 +80,7 @@ that have been injected and then handles requests for dependencies.  In this way
 only code that requests a dependency explicity is affected by injection:
 
 ```
-from twin_sister import dependency
+from younger_twin_sister import dependency
 
 class Horse:
 
@@ -110,7 +110,7 @@ python setup.py install
 ## Generic technique to inject any object as a dependency
 
 ```
-from twin_sister import dependency, dependency_context
+from younger_twin_sister import dependency, dependency_context
 
 class Knight:
 
@@ -120,7 +120,7 @@ class Knight:
     self.guess = dependency(VELOCITY_OF_SOUTH_AFRICAN_SWALLOW)
 
 
-with dependency_context as context:
+with dependency_context() as context:
   context.inject(Horse, FakeHorse)
   context.inject(current_month, lambda: 'February')
   context.inject(VELOCITY_OF_SOUTH_AFRICAN_SWALLOW, 42)
@@ -137,7 +137,7 @@ requests for `Horse` will return `FakeHorse`.  Outside the context
 ## Special technique: "classes" that always produce the same object
 
 ```
-with dependency_context as context:
+with dependency_context() as context:
   eric_the_horse = FakeHorse()
   context.inject_as_class(Horse, eric_the_horse)
   lancelot = Knight()
@@ -192,7 +192,7 @@ thread:
 my_thread = Thread(target=spam)
 my_thread.start()
 
-with dependency_context as context:
+with dependency_context() as context:
   context.attach_to_thread(my_thread)
   ...
 ```
@@ -212,7 +212,7 @@ comes in.  It's a self-contained way to inject a fake datetime.datetime:
 
 ```
 from expects import expect, be_a, be_none
-from twin_sister import TimeController
+from younger_twin_sister import TimeController
 
 # Verify that the function times out after 24 hours
 time_travel = TimeController(target=some_function_i_want_to_test)
@@ -257,3 +257,38 @@ expect(time_travel.value_returned).to(equal(expected))
 
 There are limitations.  The fake datetime affects only .now() and .utcnow()
 at present.  This may change in a future release as needs arise.
+
+## Fake environment variables integration
+```
+real_path = os.environ['PATH']
+fake_path = 'something else'
+with dependency_context(supply_env=True) as context:
+  context.set_env(PATH=fake_path)
+  assert(dependency(os).environ['PATH']) == fake_path
+assert os.environ['PATH'] == real_path
+```
+
+
+## Fake filesystem (PyFakeFS) integration
+
+```
+with dependency_context(supply_fs=True):
+  filename = 'favorites.txt'
+  open = dependency(open)
+  with open(filename, 'w') as f:
+     f.write('some of my favorite things')
+  with open(filename, 'r') as f:
+     print('From the fake file: %s' % f.read())
+  assert dependency(os).path.exists(filename)
+assert not os.path.exists(filename)
+```
+
+## Fake log system integration
+```
+message = 'This goes only to the fake log'
+with dependency_context(supply_logging=True) as context:
+  log = dependency(logging).getLogger(__name__)
+  log.error(message)
+  # fake_log.stored_records is a list of logging.LogRecord objects
+  assert context.fake_log.stored_records[0].msg == message
+```
