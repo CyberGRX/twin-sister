@@ -1,8 +1,7 @@
 import os
-import subprocess
-import sys
-
-from setuptools import Command, setup, find_packages
+from setuptools import setup, find_packages
+from setuptools.command.test import test
+from unittest import TestLoader
 
 MAJOR_VERSION = 2
 MINOR_VERSION = 0
@@ -10,23 +9,20 @@ PATCH_VERSION = 4
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
-CI_BUILD_ID = 'CI_BUILD_ID'
+CI_BUILD_ID = 'BUILD_NUMBER'
 
 
-class TestRunner(Command):
-    user_options = []
+class TestRunner(test):
 
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        python = sys.executable
-        p = subprocess.run(
-            (python, '-m', 'unittest', 'discover', '-s', 'tests'))
-        exit(p.returncode)
+    def run_tests(self):
+        # If we perform this input at the top of the file, we get an
+        # import error because we need to load this file to discover
+        # dependenices.
+        from xmlrunner import XMLTestRunner
+        tests = TestLoader().discover('tests', pattern='test_*.py')
+        runner = XMLTestRunner(output='reports')
+        result = runner.run(tests)
+        exit(0 if result.wasSuccessful() else 1)
 
 
 def set_build_number_from_ci_environment():
@@ -57,10 +53,12 @@ setup(name='twin_sister',
       packages=find_packages(),
       include_package_data=True,
       exclude_package_data={'': ['tests']},
-      cmdclass={'test': TestRunner},
       install_requires=[
-       'expects>=0.8.0',  # required by unit tests
-       'twine>=1.9.1',  # required by setup
-       'wheel>=0.30.0'  # required by setup
-	]
+        'expects>=0.8.0',
+        'pyfakefs>=3.4.3',
+        'twine>=1.9.1',
+        'unittest-xml-reporting>=2.1.1',
+        'wheel>=0.30.0'
+        ],
+      cmdclass={'test': TestRunner}
       )

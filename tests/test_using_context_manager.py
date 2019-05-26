@@ -3,8 +3,8 @@ from unittest import TestCase, main
 
 from expects import expect, be_false, be_true
 
-from twin_sister import dependency, dependency_context
-from twin_sister .singleton_class import SingletonClass
+from younger_twin_sister import dependency, dependency_context
+from younger_twin_sister .singleton_class import SingletonClass
 
 
 class Canary:

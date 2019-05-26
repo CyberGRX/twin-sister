@@ -10,16 +10,20 @@ class TimeController(Thread):
     Executes a function in a new thread that uses a fake datetime.
     This allows a test to manipulate time as perceived by the target function.
     """
-    def __init__(self, **kwargs):
+    def __init__(self, target, *, parent_context=None, **kwargs):
         """Initializer
 
         Behaves exactly like Thread.__init__ except that daemon defaults to
         True.
+
+        target -- function to call in the thread
+        parent_context -- inherit dependencies injected into this context
         """
-        self._target = kwargs['target']
+        self._parent_context = parent_context
+        self._target = target
         if 'daemon' not in kwargs.keys():
             kwargs['daemon'] = True
-        super().__init__(**kwargs)
+        super().__init__(target=target, **kwargs)
         self.fake_datetime = FakeDatetime()
         self.exception_caught = None
         self.value_returned = None
@@ -36,7 +40,7 @@ class TimeController(Thread):
         self.fake_datetime.advance(**kwargs)
 
     def run(self):
-        with dependency_context() as context:
+        with dependency_context(parent=self._parent_context) as context:
             context.inject(datetime, self.fake_datetime)
             context.attach_to_thread(self)
             try:

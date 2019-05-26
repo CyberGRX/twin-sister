@@ -16,13 +16,19 @@ def dependency(dep):
 
 
 @contextmanager
-def dependency_context():
-    context = open_dependency_context()
+def dependency_context(**kwargs):
+    """
+    kwargs get passed to DependencyContext initializer
+    """
+    context = open_dependency_context(**kwargs)
     yield context
     context.close()
 
 
-def open_dependency_context():
-    context = DependencyContext()
+def open_dependency_context(**kwargs):
+    """
+    kwargs get passed to DependencyContext initializer
+    """
+    context = DependencyContext(**kwargs)
     DependencyRegistry.register(context)
     return context
