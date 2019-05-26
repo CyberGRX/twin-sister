@@ -4,10 +4,10 @@ import sys
 
 from expects import expect, be, be_a, be_empty, contain, equal, have_length
 
-from younger_twin_sister import dependency, dependency_context
-from younger_twin_sister.dependency_context import DependencyContext
-import younger_twin_sister.fake_logging as fake_logging
-from younger_twin_sister.passthrough import Passthrough
+from twin_sister import dependency, dependency_context
+from twin_sister.injection.dependency_context import DependencyContext
+import twin_sister.injection.fake_logging as fake_logging
+from twin_sister.injection.passthrough import Passthrough
 
 FakeLogging = fake_logging.FakeLogging
 

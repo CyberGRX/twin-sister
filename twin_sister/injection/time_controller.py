@@ -1,7 +1,8 @@
 from datetime import datetime
 from threading import Thread
 
-from .convenience_functions import dependency_context
+from twin_sister.convenience_functions import dependency_context
+
 from .fake_datetime import FakeDatetime
 
 

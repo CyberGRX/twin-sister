@@ -3,7 +3,7 @@ from unittest import TestCase, main
 
 from expects import expect, equal
 
-from younger_twin_sister.dependency_context import DependencyContext
+from twin_sister.injection.dependency_context import DependencyContext
 
 
 class TestUnsetEnv(TestCase):

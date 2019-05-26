@@ -2,20 +2,20 @@ from unittest import TestCase, main
 
 from expects import expect, be
 
-from younger_twin_sister import dependency, dependency_context
+from twin_sister import dependency, dependency_context
 
 
 class Thing:
     pass
 
 
-class TestInjectAsSingleton(TestCase):
+class TestInjectAsClass(TestCase):
 
     def test_as_class(self):
         injected = object()
         with dependency_context() as context:
-            context.inject_as_singleton(Thing, injected)
-            retrieved = dependency(Thing).instance()
+            context.inject_as_class(Thing, injected)
+            retrieved = dependency(Thing)()
             expect(retrieved).to(be(injected))
 
 

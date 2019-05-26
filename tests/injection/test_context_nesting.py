@@ -2,7 +2,7 @@ from unittest import TestCase, main
 
 from expects import expect, equal
 
-from younger_twin_sister import TimeController, \
+from twin_sister import TimeController, \
     close_all_dependency_contexts, \
     dependency, dependency_context, open_dependency_context
 

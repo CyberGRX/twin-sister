@@ -1,4 +1,4 @@
-from .time_controller import TimeController
+from .injection.time_controller import TimeController
 from .convenience_functions import close_all_dependency_contexts, \
     dependency, dependency_context, open_dependency_context
 

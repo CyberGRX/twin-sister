@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 from setuptools.command.test import test
 from unittest import TestLoader
 
-MAJOR_VERSION = 3
+MAJOR_VERSION = 4
 MINOR_VERSION = 0
 PATCH_VERSION = 0
 
@@ -58,7 +58,7 @@ setup(name='twin_sister',
         'pyfakefs>=3.4.3',
         'twine>=1.9.1',
         'unittest-xml-reporting>=2.1.1',
-        'wheel>=0.3.0'
+        'wheel>=0.30.0'
         ],
-      cmdclass={'test': TestRunner},
+      cmdclass={'test': TestRunner}
       )

@@ -1,7 +1,7 @@
 from contextlib import contextmanager
 
-from .dependency_context import DependencyContext
-from .dependency_registry import DependencyRegistry
+from .injection.dependency_context import DependencyContext
+from .injection.dependency_registry import DependencyRegistry
 
 
 def close_all_dependency_contexts():
