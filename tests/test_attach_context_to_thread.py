@@ -3,7 +3,7 @@ from unittest import TestCase, main
 
 from expects import expect, be, raise_error
 
-from younger_twin_sister import dependency, dependency_context
+from twin_sister import dependency, dependency_context
 
 
 class TwoStageThread(Thread):

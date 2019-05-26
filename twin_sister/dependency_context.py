@@ -1,12 +1,12 @@
 import logging
 import os
 
-from younger_twin_sister.dependency_registry import DependencyRegistry
-import younger_twin_sister.fake_fs as fake_fs
-from younger_twin_sister.fake_logging import FakeLogging
-from younger_twin_sister.fake_singleton import FakeSingleton
-from younger_twin_sister.passthrough import Passthrough
-from younger_twin_sister.singleton_class import SingletonClass
+from twin_sister.dependency_registry import DependencyRegistry
+import twin_sister.fake_fs as fake_fs
+from twin_sister.fake_logging import FakeLogging
+from twin_sister.fake_singleton import FakeSingleton
+from twin_sister.passthrough import Passthrough
+from twin_sister.singleton_class import SingletonClass
 
 
 class DependencyContext:

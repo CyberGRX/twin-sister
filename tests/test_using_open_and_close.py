@@ -3,9 +3,9 @@ from unittest import TestCase, main
 
 from expects import expect, be_false, be_true
 
-from younger_twin_sister import close_all_dependency_contexts, dependency, \
+from twin_sister import close_all_dependency_contexts, dependency, \
     open_dependency_context
-from younger_twin_sister.singleton_class import SingletonClass
+from twin_sister.singleton_class import SingletonClass
 
 
 class Canary:

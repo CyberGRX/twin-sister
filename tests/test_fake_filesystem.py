@@ -4,8 +4,8 @@ from unittest import TestCase, main
 from expects import expect, be, be_a, equal
 from pyfakefs import fake_filesystem as fakefs
 
-from younger_twin_sister import dependency, dependency_context
-from younger_twin_sister.dependency_context import DependencyContext
+from twin_sister import dependency, dependency_context
+from twin_sister.dependency_context import DependencyContext
 
 
 class TestFakeFilesystem(TestCase):

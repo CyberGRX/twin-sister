@@ -3,8 +3,8 @@ from unittest import TestCase, main
 
 from expects import expect, be, equal
 
-from younger_twin_sister import dependency, dependency_context
-from younger_twin_sister.dependency_context import DependencyContext
+from twin_sister import dependency, dependency_context
+from twin_sister.dependency_context import DependencyContext
 
 
 class TestFakeEnviron(TestCase):
