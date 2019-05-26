@@ -61,9 +61,4 @@ setup(name='twin_sister',
         'wheel>=0.3.0'
         ],
       cmdclass={'test': TestRunner},
-      install_requires=[
-       'expects>=0.8.0',  # required by unit tests
-       'twine>=1.9.1',  # required by setup
-       'wheel>=0.30.0'  # required by setup
-	]
       )
