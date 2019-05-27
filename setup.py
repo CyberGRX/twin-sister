@@ -5,7 +5,7 @@ from unittest import TestLoader
 
 MAJOR_VERSION = 4
 MINOR_VERSION = 2
-PATCH_VERSION = 0
+PATCH_VERSION = 1
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
@@ -43,7 +43,7 @@ with open('README.md', 'r') as f:
 
 setup(name='twin_sister',
       version=version_number(),
-      description='Gentle dependency injection',
+      description='Unit test toolkit',
       url='https://github.com/CyberGRX/twin-sister',
       author='Mike Duskis',
       author_email='mike.duskis@cybergrx.com',
