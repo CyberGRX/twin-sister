@@ -4,7 +4,8 @@ from twin_sister.exceptions import \
 
 class FunctionSpy:
 
-    def __init__(self):
+    def __init__(self, return_value=None):
+        self._return_value = return_value
         self.call_history = []
 
     def assert_was_called(self):
@@ -25,6 +26,7 @@ class FunctionSpy:
 
     def __call__(self, *args, **kwargs):
         self.call_history.append((args, kwargs))
+        return self._return_value
 
     def __getitem__(self, item):
         args, kwargs = self.last_call()

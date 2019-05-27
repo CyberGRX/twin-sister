@@ -1,6 +1,6 @@
 from unittest import TestCase, main
 
-from expects import expect, equal
+from expects import expect, be_none, equal
 
 from twin_sister.exceptions import \
     ArgNotSpecified, FunctionNotCalled, KwargNotSpecified
@@ -9,6 +9,14 @@ from twin_sister.fakes import FunctionSpy
 
 
 class TestFunctionSpy(TestCase):
+
+    def test_can_specify_return_value(self):
+        planted = 42
+        spy = FunctionSpy(return_value=planted)
+        expect(spy()).to(equal(planted))
+
+    def test_return_value_is_none_if_not_specified(self):
+        expect(FunctionSpy()()).to(be_none)
 
     def test_saves_kwargs_from_first_call(self):
         spy = FunctionSpy()
