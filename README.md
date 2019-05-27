@@ -86,7 +86,7 @@ def post_something(content):
   - #### <a href="#master-spy-section">MasterSpy</a>
 - ### <a href="#expects-matchers-section">Expects matchers</a>
   - #### <a href="#complain-section">complain</a>
-  - #### <a href="#contain-all-items-section">contain_all_items_in>contain_all_items_in</a>
+  - #### <a href="#contain-all-items-section">contain_all_items_in</a>
 
 
 <a name="dependency-injection-section"/>
