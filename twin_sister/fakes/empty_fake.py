@@ -1,3 +1,4 @@
+import inspect
 from random import randrange
 import sys
 
@@ -32,7 +33,18 @@ class EmptyFake:
     def __float__(self):
         return 0.0
 
+    def __pattern_cls_declares(self, name):
+        return name in [a for a, _ in inspect.getmembers(self.__pattern_cls)]
+
     def __getattr__(self, name):
+        if self.__pattern_cls and not self.__pattern_cls_declares(name):
+            raise AttributeError(
+                f'{self.__pattern_cls} does not declare "{name}"')
+        if not (
+                self.__pattern_obj is None or
+                hasattr(self.__pattern_obj, name)):
+            raise AttributeError(
+                f'{self.__pattern_obj} has no attribute "{name}"')
         return self.__spawn()
 
     def __getitem__(self, key):
@@ -46,7 +58,12 @@ class EmptyFake:
     def __hash__(self):
         return self.__hash
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, pattern_cls=None, pattern_obj=None, **kwargs):
+        if not (pattern_cls is None or pattern_obj is None):
+            raise TypeError(
+                'pattern_cls and pattern_obj are mutually exclusive')
+        self.__pattern_cls = pattern_cls
+        self.__pattern_obj = pattern_obj
         self.__hash = randrange(sys.maxsize-1)
 
     def __int__(self):

@@ -5,7 +5,7 @@ from expects import \
     be_above_or_equal, be_below, be_below_or_equal, equal, \
     have_length
 
-from twin_sister.fakes import EmptyFake
+from twin_sister.fakes import EmptyFake, MutableObject
 from twin_sister.expects_matchers import complain
 
 
@@ -120,6 +120,52 @@ class TestEmptyFake(TestCase):
 
     def test_str_returns_str(self):
         expect(str(EmptyFake())).to(be_a(str))
+
+    def test_raises_attribute_error_on_attempt_to_break_pattern_object(self):
+        pattern = object()
+        fake = EmptyFake(pattern_obj=pattern)
+        expect(lambda: fake.nope).to(complain(AttributeError))
+
+    def test_returns_empty_fake_when_obj_pattern_satisfied(self):
+        pattern = MutableObject()
+        attr = 'yup'
+        setattr(pattern, attr, None)
+        fake = EmptyFake(pattern_obj=pattern)
+        returned = getattr(fake, attr)
+        expect(returned).to(be_a(EmptyFake))
+        # Verify that the pattern restriction is not inherited
+        expect(returned.spam).to(be_a(EmptyFake))
+
+    def test_respects_hasattr_for_pattern_objects(self):
+
+        class Pattern:
+            def __getattr__(self, name):
+                return 'spam'
+
+        fake = EmptyFake(pattern_obj=Pattern())
+        assert hasattr(fake, 'anything'), 'hasattr returned False'
+
+    def test_can_use_falsy_object_patterns(self):
+        fake = EmptyFake(pattern_obj=set())
+        expect(lambda: fake.spam).to(complain(AttributeError))
+
+    def test_raises_attribute_error_on_attempt_to_break_pattern_cls(self):
+        fake = EmptyFake(pattern_cls=str)
+        expect(lambda: fake.spam).to(complain(AttributeError))
+
+    def test_returns_empty_fake_when_cls_pattern_satisfied(self):
+        fake = EmptyFake(pattern_cls=str)
+        returned = fake.split
+        expect(returned).to(be_a(EmptyFake))
+        expect(returned.spam).to(be_a(EmptyFake))
+
+    def test_complains_about_attempt_to_set_pattern_obj_and_cls(self):
+        expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=1)).to(
+            complain(TypeError))
+
+    def test_check_for_both_patterns_not_fooled_by_falsy_objects(self):
+        expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=0)).to(
+            complain(TypeError))
 
 
 if '__main__' == __name__:
