@@ -1,10 +1,101 @@
-# Twin Sister: Pure Python Dependency Injection
+# Twin Sister:
+## A Unit Testing Toolkit with Pure Python Dependency Injection
 
 > No, I am Zoot's identical twin sister, Dingo.
 
-## What is dependency injection and why should I care?
+## How Twin Sister can help you
 
-If you write unit tests (and you do write them, right?) you have encountered
+Whether or not you accept Michael Feathers's definition of "legacy code" as
+"code without tests," you know that you should write unit tests and that it
+would be a Good Thing if those tests were legible enough to show what your code
+does and effective enough to tell you when you've broken something.  On the
+other hand, writing good unit tests can be _hard_ -- especially when they need
+to cover the unit's interactions with external components.
+
+Enter Twin Sister.  Initially an internal project at ProtectWise in 2016, it
+was released as open source in 2017 and has been in continuous and expanding
+use ever since.  Its goal is to make unit tests easier to write and easier to
+read without doing violence to the system-under-test.  It consists of a small
+library of test doubles and a pure Python dependency injector to deliver them
+(or anything else that suits your fancy).
+
+## What it looks like in action ##
+
+`test_post_something.py`
+```
+from unittest import TestCase
+
+from expects import expect, equal
+import requests
+from twin_sister import open_dependency_context
+from twin_sister.fakes import EmptyFake, FunctionSpy
+
+from post_something import post_something
+
+class TestPostSomething(TestCase):
+
+  def setUp(self):
+      self.context = open_dependency_context()
+      self.post_spy = FunctionSpy()
+      requests_stub = EmptyFake(pattern_obj=requests)
+      requests_stub.post = self.post_spy
+      self.context.inject(requests, requests_stub)
+
+  def tearDown(self):
+      self.context.close()
+
+  def test_uses_post_method(self):
+      post_something('yadda')
+      self.post_spy.assert_was_called()
+
+  def test_sends_specified_content(self):
+      content = 'yadda yadda yadda'
+      post_something(content)
+      expect(self.post_spy['data']).to(equal(content))  
+```
+
+`post_something.py`
+```
+import requests
+from twin_sister import dependency
+
+def post_something(content):
+    post = dependency(requests).post
+    post('http://example.com/some-api', data=content)
+```
+
+## Learning More ##
+- ### <a href="#dependency-injection-section">Dependency injection mechanism</a>
+  - #### <a href="#injection-techniques-section"/>Dependency injection techniques</a>
+  - #### <a href="#injecting-section">Injecting a dependency with Twin Sister</a>
+    - <a href="#object-injection-section">Generic technique to inject any object</a>
+    - <a href="#object-as-class-injection-section">Injecting a class that always produces the same object</a>
+    - <a href="#xunit-section">Support for the xUnit test pattern</a>
+    - <a href="#multi-threaded-test-section">Support for multi-threaded tests</a>
+- ### <a href="#context-section">The dependency context and built-in fakery</a>
+  - #### <a href="#fake-environment-section">Fake environment variables</a>
+  - #### <a href="#fake-logging-section">Fake logging</a>
+  - #### <a href="#fake-filesystem-section">Fake filesystem</a>
+  - #### <a href="#fake-time-section">Fake time</a>
+- ### <a href="#doubles-section">Test doubles</a>
+  - #### <a href="#mutable-object-section">MutableObject</a>
+  - #### <a href="#empty-fake-section">EmptyFake</a>
+  - #### <a href="#empty-context-manager-section">empty_context_manager</a>
+  - #### <a href="#fake-datetime-section">FakeDateTime</a>
+  - #### <a href="#function-spy-section">FunctionSpy</a>
+  - #### <a href="#master-spy-section">MasterSpy</a>
+- ### <a href="#expects-matchers-section">Expects matchers</a>
+  - #### <a href="#complain-section">complain</a>
+  - #### <a href="#contain-all-items-section">contain_all_items_in</a>
+
+
+<a name="dependency-injection-section"/>
+
+# Dependency injection mechanism #
+
+## What is dependency injection and why should I care? ##
+
+If you write tests for non-trivial units, you have encountered
 situations where the unit you are testing depends on some component outside of
 itself.  For example, a unit that retrieves data from an HTTP API depends on
 an HTTP client.  By definition, a unit test does not include systems outside
@@ -13,9 +104,11 @@ unit to make fake requests using a component with the same interface as the real
 HTTP client.  The mechanism that replaces the real HTTP client with a fake one
 is a kind of dependency injection.
 
-## Dependency injection mechanisms
+<a name="injection-techniques-section"/>
 
-### Most simple: specify initializer arguments
+## Dependency injection techniques ##
+
+### Most simple: specify initializer arguments ###
 
 ```
 class Knight:
@@ -37,12 +130,12 @@ sir_lancelot = Knight(http_client=fake)
 This approach has the advantage of being simple and straightforward and can
 be more than adequate if the problem space is small and well-contained.
 It begins to break down, however, as the system under test becomes more
-complex.  The initializer must specify each dependency that can be injected
+complex.  One manifestation of this breakdown is the appearance of "hobo arguments."   The initializer must specify each dependency that can be injected
 and the target bears responsibility for maintaining each injected object and
 passing it to sub-components as they are created.
 
-In many cases, this approach will force classes to be aware of injected entities
-that otherwise ought not concern them.  For example
+For example
+
 
 ```
 class Horse:
@@ -57,7 +150,7 @@ class Knight:
     self.horse = Horse(tail=tail_for_horse)
 ```
 
-The _only_ reason `Knight.__init__` has for accepting `tail_for_horse` is to
+`tail_for_horse` is a hobo.  The _only_ reason `Knight.__init__` has for accepting it is to
 pass it through to `Horse.__init__`.  This is awkward, aside from its damage
 to separation of concerns.
 
@@ -99,15 +192,26 @@ returns the real thing.  In this way, the system will behave sensibly whether
 injection has occurred or not.
 
 
+<a name="injecting-section"/>
+
 # Injecting a dependency with Twin Sister
 
-## Installation
+
+## Installation from pip
+
+```
+pip install twin-sister
+```
+
+## Installation from source
 
 ```
 python setup.py install
 ```
 
-## Generic technique to inject any object as a dependency
+<a name="object-injection-section"/>
+
+## Generic technique to inject any object ##
 
 ```
 from younger_twin_sister import dependency, dependency_context
@@ -134,7 +238,9 @@ requests for `Horse` will return `FakeHorse`.  Outside the context
 (after the `with` statement), requests for `Horse` will return `Horse`.
 
 
-## Special technique: "classes" that always produce the same object
+<a name="object-as-class-injection-section"/>
+
+## Injecting a class that always produces the same object ##
 
 ```
 with dependency_context() as context:
@@ -153,6 +259,8 @@ fresh_horse = dependency(Horse)()
 
 fresh_horse will be the same old eric_the_horse.
 
+
+<a name="xunit-section"/>
 
 ## Support for xUnit test pattern
 
@@ -179,6 +287,8 @@ class MyTest(TestCase):
 
 ```
 
+<a name="multi-threaded-test-section"/>
+
 ## Support for multi-threaded tests
 
 By default, Twin Sister maintains a separate dependency context for each thread.
@@ -200,11 +310,70 @@ with dependency_context() as context:
 The usual rules about context scope apply.  Even if the thread continues to run,
 the context will disappear after the `with` statement ends.
 
+<a name="context-section"/>
 
-## Controlling time
+# The dependency context and built-in fakery #
+
+The dependency context is essentially a dictionary that maps real objects to their injected fakes, but it also knows how to fake some commonly-used components from the Python standard library.
+
+<a name="fake-environment-section"/>
+
+## Fake environment variables
+
+Most of the time, we don't want our unit tests to inherit real environment variables because that would introduce an implicit dependency on system configuration.  Instead, we create a dependency context with `supply_env=True`.  This creates a fake set of environment variables, initially empty.  We can then add environment variables as expected by our system under test:
+
+```
+with dependency_context(supply_env=True) as context:
+  context.set_env(PATH='/bin', SPAM='eggs')
+```
+
+The fake environment is just a dictionary in an injected `os`, so the system-under-test must request it explicitly as a dependency:
+
+```
+path = dependency(os).environ['PATH']
+```
+
+The injected `os` is mostly a passthrough to the real thing.
+
+<a name="fake-logging-section"/>
+
+## Fake logging
+
+Most of the time, we don't want our unit tests to use the real Python logging system -- especially if it writes messages to standard output (as it usually does).  This makes tests fill standard output with noise from useless logging messages. Some of the time, we want our tests to see the log messages produced by the system-under-test.  The fake log system meets both needs.
+
+```
+message = 'This goes only to the fake log'
+with dependency_context(supply_logging=True) as context:
+  log = dependency(logging).getLogger(__name__)
+  log.error(message)
+  # fake_log.stored_records is a list of logging.LogRecord objects
+  assert context.fake_log.stored_records[0].msg == message
+```
+
+<a name="fake-filesystem-section"/>
+
+## Fake filesystem
+
+Most of the time, we don't want our unit tests to use the real filesystem.  That would introduce an implicit dependency on actual system state and potentially leave a mess behind.  To solve this problem, the dependency context can leverage [pyfakefs](https://pypi.org/project/pyfakefs/) to supply a fake filesystem.
+
+```
+with dependency_context(supply_fs=True):
+  filename = 'favorites.txt'
+  open = dependency(open)
+  with open(filename, 'w') as f:
+     f.write('some of my favorite things')
+  with open(filename, 'r') as f:
+     print('From the fake file: %s' % f.read())
+  assert dependency(os).path.exists(filename)
+assert not os.path.exists(filename)
+```
+
+<a name="fake-time-section"/>
+
+## Fake time
 
 Sometimes it is useful -- or even necessary -- for a test case to
-control time as its perceived by the system under test.  The classic example
+control time as its perceived by the system-under-test.  The classic example
 is a routine that times out after a specified duration has elapsed.  Thorough
 testing should cover both sides of the boundary, but it is usually undesirable
 or impractical to wait for the duration to elapse.  That is where TimeController
@@ -254,41 +423,237 @@ time_travel.join()
 expect(time_travel.value_returned).to(equal(expected))
 ```
 
+By default, TimeController has its own dependency context, but it can use a specified one instead:
+
+```
+with open_dependency_context() as context:
+    TimeController(target=some_function, parent_context=context)
+```
 
 There are limitations.  The fake datetime affects only .now() and .utcnow()
 at present.  This may change in a future release as needs arise.
 
-## Fake environment variables integration
+
+<a name="doubles-section"/>
+
+# Test Doubles #
+
+Classically, test doubles fall into three general categories:
+
+#### Stubs ####
+A stub faces the unit-under-test and mimics the behavior of some external component.
+
+#### Spies ####
+A spy faces the test and reports on the behavior of the unit-under-test.
+
+#### Mocks ####
+A mock is a stub that contains assertions.  Twin Sister's `fakes` module has none of these but most of the supplied fakes are so generic that mock behavior can be added.
+
+
+## Supplied Stubs ##
+
+<a name="mutable-object-section"/>
+
+### MutableObject ###
+
+Embarrassingly simple, but frequently useful for creating stubs on the fly:
+
 ```
-real_path = os.environ['PATH']
-fake_path = 'something else'
-with dependency_context(supply_env=True) as context:
-  context.set_env(PATH=fake_path)
-  assert(dependency(os).environ['PATH']) == fake_path
-assert os.environ['PATH'] == real_path
+from twin_sister.fakes import MutableObject
+
+stub = MutableObject()
+stub.say_hello = lambda: 'hello, world'
+```
+
+<a name="empty-fake-section"/>
+
+### EmptyFake ###
+
+An extremely generic stub that aims to be a substitute for absolutely anything.  Its attributes are EmptyFake objects.  When it's called like a function, it returns another EmptyFake.
+
+When invoked with no arguments, EmptyFake creates the most flexible fake possible:
+
+```
+from twin_sister.fakes import EmptyFake
+
+anything = EmptyFake()
+another_empty_fake = anything.spam
+yet_another_empty_fake = another_empty_fake(biggles=12)
+```
+
+It's possible to restrict an EmptyFake to attributes defined by some other object:
+
+```
+stub_path = EmptyFake(pattern_obj=os.path)
+# The next line returns an EmptyFake because there is an os.path.join:
+an_empty_fake = stub_path.join
+# The next line will raise AttributeError because there is no os.path.spam:
+stub_path.spam
+```
+
+It's also possible to restrict an EmptyFake to attributes declared by a class:
+
+```
+fake_string = EmptyFake(pattern_class=str)
+# The next line returns an EmptyFake because strings have attributes called "split"
+an_empty_fake = fake_string.split
+# The next will raise AttributeError because normal strings lack beans:
+fake_string.beans
+```
+
+<a name="empty-context-manager-section"/>
+
+### empty_context_manager ###
+
+A context manager that does nothing and yields an EmptyFake, useful for preventing unwanted behavior like opening network connections.
+
+```
+from twin_sister.fakes import empty_context_manager
+
+from my_stuff import network_connection
+
+with dependency_context() as context:
+  context.inject(network_connection, empty_context_manager)
+  with dependency(network_connection)() as conn:
+     conn.send("I'm singing into an EmptyFake")
+```
+
+A generic EmptyFake object will also serve as a context manager without complaints.
+
+
+<a name="fake-datetime-section"/>
+
+### FakeDateTime ###
+
+A datetime.datetime stub that reports that reports a fixed time.
+
+```
+from twin_sister.fakes import FakeDateTime
+
+t = FakeDateTime(fixed_time=datetime.now())
+# Returns the time when t was instantiated
+t.now()
+t.fixed_time = now()
+# Returns a slightly later time
+t.now()
 ```
 
 
-## Fake filesystem (PyFakeFS) integration
+## Supplied Spies ##
+
+<a name="function-spy-section"/>
+
+### FunctionSpy ###
+
+Pretends to be a real function and tracks calls to itself.
 
 ```
-with dependency_context(supply_fs=True):
-  filename = 'favorites.txt'
-  open = dependency(open)
-  with open(filename, 'w') as f:
-     f.write('some of my favorite things')
-  with open(filename, 'r') as f:
-     print('From the fake file: %s' % f.read())
-  assert dependency(os).path.exists(filename)
-assert not os.path.exists(filename)
+from twin_sister.fakes import FunctionSpy
+
+fixed_return_value = 4
+spy = FunctionSpy(return_value=fixed_return_value)
+returned = spy(6, 37, expected='biggles')
+spy.assert_was_called()
+assert returned == fixed_return_value
+assert spy.args_from_last_call() == (6, 37)
+assert spy.kwargs_from_last_call() == {'expected': biggles}
+assert spy[0] == 6
+assert spy[1] == 37
+assert spy['expected'] == biggles
+
+spy('spam', 'eggs', volume=12)
+assert spy[1] == 'eggs'
+
+args, kwargs = spy.call_history[0]
+assert args == (6, 37)
+assert kwargs == {'expected': 'biggles'}
 ```
 
-## Fake log system integration
+
+<a name="master-spy-section"/>
+
+### MasterSpy ###
+
+The spy equivalent of EmptyFake, MasterSpy tracks every interaction and spawns
+more spies to track interactions with its attributes.
+
 ```
-message = 'This goes only to the fake log'
-with dependency_context(supply_logging=True) as context:
-  log = dependency(logging).getLogger(__name__)
-  log.error(message)
-  # fake_log.stored_records is a list of logging.LogRecord objects
-  assert context.fake_log.stored_records[0].msg == message
+from twin_sister.fakes import MasterSpy, MutableObject
+
+target = MutableObject()
+target.foo = 42
+target.bar = 'soap'
+target.sing = lambda thing: f'lovely {thing}'
+master = MasterSpy(target=target, affect_only_functions=False)
+
+assert master.foo == target.foo
+master.bar.replace('a', 'u')
+bar_spy = master.attribute_spies['bar']
+args, kwargs = bar_spy.last_call_to('replace')
+assert args == ('a', 'u')
+
+master.sing(thing='SPAM')
+sing_spy = master.attribute_spies('sing')
+args, kwargs = sing_spy.call_history[0]
+assert kwargs['thing'] == 'SPAM'
+```
+
+By default MasterSpy spawns spies only for attributes that are functions.
+
+
+<a name="expects-matchers-section"/>
+
+# Expects Matchers #
+
+Custom matchers for [expects](https://pypi.org/project/expects/), an
+alternative way to assert.
+
+<a name="complain-section"/>
+
+## complain ##
+
+`expects.raise_error` will quietly return False if an unexpected exception is raised.
+`twin_sister.expects_matchers.complain`, by contrast, will re-raise the exception.
+Otherwise, the matchers are essentially equivalent.
+
+```
+from expects import expect, raise_error
+from twin_sister.expects_matchers import complain
+
+class SpamException(RuntimeError):
+  pass
+
+class EggsException(RuntimeError):
+   pass
+
+def raise_spam():
+   raise SpamException()
+
+def raise_eggs():
+   raise EggsException()
+
+# both exit quietly because the expectation is met
+expect(raise_spam).to(raise_error(SpamException))
+expect(raise_spam).to(complain(SpamException))
+
+# exits quietly because a different exception was raised
+expect(raise_eggs).not_to(raise_error(SpamException))
+
+# re-raises the exception because it differs from the expectation
+expect(raise_eggs).not_to(complain(SpamException))
+```
+
+
+<a name="contain-all-items-section"/>
+
+## contain_all_items_in ##
+
+Returns true if one dictionary contains all of the items in another.
+
+```
+from expects import expect
+from twin_sister.expects_matchers import contain_all_items_in
+
+expect({'foo': 1, 'bar': 2}).to(contain_all_items_in({'foo': 1}))
+expect({'foo': 1}).not_to(contain_all_items_in({'foo': 1, 'bar': 2}))
 ```
