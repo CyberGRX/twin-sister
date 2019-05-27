@@ -89,7 +89,7 @@ def post_something(content):
   - #### <a href="#contain-all-items-section">contain_all_items_in</a>
 
 
-<a name="dependency-injection-section"/>
+<a name="dependency-injection-section"></a>
 
 # Dependency injection mechanism #
 
@@ -104,7 +104,7 @@ unit to make fake requests using a component with the same interface as the real
 HTTP client.  The mechanism that replaces the real HTTP client with a fake one
 is a kind of dependency injection.
 
-<a name="injection-techniques-section"/>
+<a name="injection-techniques-section"></a>
 
 ## Dependency injection techniques ##
 
@@ -192,7 +192,7 @@ returns the real thing.  In this way, the system will behave sensibly whether
 injection has occurred or not.
 
 
-<a name="injecting-section"/>
+<a name="injecting-section"></a>
 
 # Injecting a dependency with Twin Sister
 
@@ -209,7 +209,7 @@ pip install twin-sister
 python setup.py install
 ```
 
-<a name="object-injection-section"/>
+<a name="object-injection-section"></a>
 
 ## Generic technique to inject any object ##
 
@@ -238,7 +238,7 @@ requests for `Horse` will return `FakeHorse`.  Outside the context
 (after the `with` statement), requests for `Horse` will return `Horse`.
 
 
-<a name="object-as-class-injection-section"/>
+<a name="object-as-class-injection-section"></a>
 
 ## Injecting a class that always produces the same object ##
 
@@ -260,7 +260,7 @@ fresh_horse = dependency(Horse)()
 fresh_horse will be the same old eric_the_horse.
 
 
-<a name="xunit-section"/>
+<a name="xunit-section"></a>
 
 ## Support for xUnit test pattern
 
@@ -287,7 +287,7 @@ class MyTest(TestCase):
 
 ```
 
-<a name="multi-threaded-test-section"/>
+<a name="multi-threaded-test-section"></a>
 
 ## Support for multi-threaded tests
 
@@ -310,13 +310,13 @@ with dependency_context() as context:
 The usual rules about context scope apply.  Even if the thread continues to run,
 the context will disappear after the `with` statement ends.
 
-<a name="context-section"/>
+<a name="context-section"></a>
 
 # The dependency context and built-in fakery #
 
 The dependency context is essentially a dictionary that maps real objects to their injected fakes, but it also knows how to fake some commonly-used components from the Python standard library.
 
-<a name="fake-environment-section"/>
+<a name="fake-environment-section"></a>
 
 ## Fake environment variables
 
@@ -335,7 +335,7 @@ path = dependency(os).environ['PATH']
 
 The injected `os` is mostly a passthrough to the real thing.
 
-<a name="fake-logging-section"/>
+<a name="fake-logging-section"></a>
 
 ## Fake logging
 
@@ -350,7 +350,7 @@ with dependency_context(supply_logging=True) as context:
   assert context.fake_log.stored_records[0].msg == message
 ```
 
-<a name="fake-filesystem-section"/>
+<a name="fake-filesystem-section"></a>
 
 ## Fake filesystem
 
@@ -368,7 +368,7 @@ with dependency_context(supply_fs=True):
 assert not os.path.exists(filename)
 ```
 
-<a name="fake-time-section"/>
+<a name="fake-time-section"></a>
 
 ## Fake time
 
@@ -434,7 +434,7 @@ There are limitations.  The fake datetime affects only .now() and .utcnow()
 at present.  This may change in a future release as needs arise.
 
 
-<a name="doubles-section"/>
+<a name="doubles-section"></a>
 
 # Test Doubles #
 
@@ -452,7 +452,7 @@ A mock is a stub that contains assertions.  Twin Sister's `fakes` module has non
 
 ## Supplied Stubs ##
 
-<a name="mutable-object-section"/>
+<a name="mutable-object-section"></a>
 
 ### MutableObject ###
 
@@ -465,7 +465,7 @@ stub = MutableObject()
 stub.say_hello = lambda: 'hello, world'
 ```
 
-<a name="empty-fake-section"/>
+<a name="empty-fake-section"></a>
 
 ### EmptyFake ###
 
@@ -501,7 +501,7 @@ an_empty_fake = fake_string.split
 fake_string.beans
 ```
 
-<a name="empty-context-manager-section"/>
+<a name="empty-context-manager-section"></a>
 
 ### empty_context_manager ###
 
@@ -521,7 +521,7 @@ with dependency_context() as context:
 A generic EmptyFake object will also serve as a context manager without complaints.
 
 
-<a name="fake-datetime-section"/>
+<a name="fake-datetime-section"></a>
 
 ### FakeDateTime ###
 
@@ -541,7 +541,7 @@ t.now()
 
 ## Supplied Spies ##
 
-<a name="function-spy-section"/>
+<a name="function-spy-section"></a>
 
 ### FunctionSpy ###
 
@@ -570,7 +570,7 @@ assert kwargs == {'expected': 'biggles'}
 ```
 
 
-<a name="master-spy-section"/>
+<a name="master-spy-section"></a>
 
 ### MasterSpy ###
 
@@ -601,14 +601,14 @@ assert kwargs['thing'] == 'SPAM'
 By default MasterSpy spawns spies only for attributes that are functions.
 
 
-<a name="expects-matchers-section"/>
+<a name="expects-matchers-section"></a>
 
 # Expects Matchers #
 
 Custom matchers for [expects](https://pypi.org/project/expects/), an
 alternative way to assert.
 
-<a name="complain-section"/>
+<a name="complain-section"></a>
 
 ## complain ##
 
@@ -644,7 +644,7 @@ expect(raise_eggs).not_to(complain(SpamException))
 ```
 
 
-<a name="contain-all-items-section"/>
+<a name="contain-all-items-section"></a>
 
 ## contain_all_items_in ##
 
