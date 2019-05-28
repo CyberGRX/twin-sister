@@ -167,6 +167,10 @@ class TestEmptyFake(TestCase):
         expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=0)).to(
             complain(TypeError))
 
+    def test_getattr_does_not_invent_private_attributes(self):
+        expect(lambda: EmptyFake()._private).to(
+            complain(AttributeError))
+
 
 if '__main__' == __name__:
     main()

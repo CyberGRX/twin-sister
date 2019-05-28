@@ -37,6 +37,12 @@ class EmptyFake:
         return name in [a for a, _ in inspect.getmembers(self.__pattern_cls)]
 
     def __getattr__(self, name):
+        if name.startswith('_'):
+            raise AttributeError(
+                f'"{name}" was not declared explicitly and EmptyFake does '
+                'not invent private attributes.  Hint: am I an EmptyFake '
+                'subclass that declared __init__ but failed to invoke '
+                'super().__init__?')
         if self.__pattern_cls and not self.__pattern_cls_declares(name):
             raise AttributeError(
                 f'{self.__pattern_cls} does not declare "{name}"')
