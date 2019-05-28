@@ -171,6 +171,15 @@ class TestEmptyFake(TestCase):
         expect(lambda: EmptyFake()._private).to(
             complain(AttributeError))
 
+    def test_str_behaves_sensibly_for_subclass_that_neglects_super(self):
+
+        class BadFake(EmptyFake):
+
+            def __init__(self):
+                pass
+
+        expect(str(BadFake())).to(be_a(str))
+
 
 if '__main__' == __name__:
     main()

@@ -100,13 +100,14 @@ class EmptyFake:
 
     def __str__(self):
         base = 'EmptyFake object'
-        if self.__pattern_cls is not None:
-            return (
-                f'({base} using {str(self.__pattern_cls)} as a pattern class)')
-        if self.__pattern_obj is not None:
-            if hasattr(self.__pattern_obj, '__name__'):
-                name = f'"{self.__pattern_obj.__name__}"'
-            else:
-                name = '{type(self.__pattern_obj) instance'
-            return (f'({base} using {name} as an pattern object)')
-        return "(EmptyFake object)"
+        if self.__class__ == EmptyFake:
+            if self.__pattern_cls is not None:
+                return (
+                    f'({base} using {self.__pattern_cls} as a pattern class)')
+            if self.__pattern_obj is not None:
+                if hasattr(self.__pattern_obj, '__name__'):
+                    name = f'"{self.__pattern_obj.__name__}"'
+                else:
+                    name = '{type(self.__pattern_obj) instance'
+                return (f'({base} using {name} as an pattern object)')
+        return f'({base})'
