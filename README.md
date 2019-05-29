@@ -501,6 +501,12 @@ an_empty_fake = fake_string.split
 fake_string.beans
 ```
 
+Important limitation: "declared by a class" means that the attribute appears in
+the class declaration.  If the attribute gets created by the initializer instead,
+then it's not declared by the class and EmptyFake will insist that the attribute
+does not exist.  If you need an attribute that gets created by the initializer,
+you're better off instantiating an object to use as a `pattern_obj`.
+
 <a name="empty-context-manager-section"></a>
 
 ### empty_context_manager ###
