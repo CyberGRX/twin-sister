@@ -108,6 +108,6 @@ class EmptyFake:
                 if hasattr(self.__pattern_obj, '__name__'):
                     name = f'"{self.__pattern_obj.__name__}"'
                 else:
-                    name = '{type(self.__pattern_obj) instance'
+                    name = f'{type(self.__pattern_obj)} instance'
                 return (f'({base} using {name} as an pattern object)')
         return f'({base})'
