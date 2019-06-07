@@ -27,6 +27,34 @@ class TestDependencyContext(TestCase):
         sut.inject(dependency, injected)
         expect(sut.get(dependency)).to(be(injected))
 
+    def test_spawned_context_returns_value_from_parent(self):
+        key = object()
+        parent_value = 46
+        parent = DependencyContext()
+        parent.inject(key, parent_value)
+        child = parent.spawn()
+        expect(child.get(key)).to(be(parent_value))
+
+    def test_spawned_context_can_override_parent_value(self):
+        key = object()
+        parent_value = 37
+        child_value = 2
+        parent = DependencyContext()
+        parent.inject(key, parent_value)
+        child = parent.spawn()
+        child.inject(key, child_value)
+        expect(child.get(key)).to(be(child_value))
+
+    def test_spawned_context_does_not_replace_parent_value(self):
+        key = object()
+        parent_value = 37
+        child_value = 2
+        parent = DependencyContext()
+        parent.inject(key, parent_value)
+        child = parent.spawn()
+        child.inject(key, child_value)
+        expect(parent.get(key)).to(be(parent_value))
+
 
 if '__main__' == __name__:
     main()

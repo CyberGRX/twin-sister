@@ -423,11 +423,12 @@ time_travel.join()
 expect(time_travel.value_returned).to(equal(expected))
 ```
 
-By default, TimeController has its own dependency context, but it can use a specified one instead:
+By default, TimeController has its own dependency context, but it can
+inherit a specified one instead:
 
 ```
 with open_dependency_context() as context:
-    TimeController(target=some_function, parent_context=context)
+    tc = context.create_time_controller(target=some_function)
 ```
 
 There are limitations.  The fake datetime affects only .now() and .utcnow()

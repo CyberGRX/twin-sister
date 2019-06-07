@@ -1,6 +1,7 @@
 import logging
 import os
 
+from twin_sister.injection.context_time_controller import ContextTimeController
 from twin_sister.injection.dependency_registry import DependencyRegistry
 import twin_sister.injection.fake_fs as fake_fs
 from twin_sister.injection.fake_logging import FakeLogging
@@ -141,3 +142,17 @@ class DependencyContext:
         """
         self._assert_fake_env()
         del self.os.environ[key]
+
+    def create_time_controller(
+            self, target, daemon=True, **kwargs):
+        """
+        Return a TimeController that inherits this context
+        """
+        return ContextTimeController(
+            daemon=daemon, target=target, parent_context=self)
+
+    def spawn(self):
+        """
+        Return a DependencyContext that is a child of this one
+        """
+        return self.__class__(parent=self)
