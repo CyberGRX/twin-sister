@@ -10,6 +10,6 @@ deploy:
   on:
     branch: master
     tags: true
-  user: "cybergrx:
+  user: "cybergrx"
   password:
     secure: QZG1AFqVqZdCtGD/7gfARa/1teJG69SN+k3Moi9uvVEHUUHD2C3o29vKjKCzayKhSoYmhxCYsvieblsCpLyNDuZwMlqMJqssvGEg7Yrz0WYImx9BYUG5p7Y8msrMjYookUnobutZUuMIqJOAGe4a/yrIYLSCXqE2ufzv4OO0eWA2ufEyeuco9D6T+Vzvpnqfk2h69HzBSiDHXV9XKLRtN709LIZuRTXHYqzZlHvB9AWOAqxQdBLzp6UdiSu6YJV8A9bhDuwZJo3Maq8JLjpxu+JZ+BrZl1+wJ/6mS7PJJUA0RloklqbBgygRutXms9BUB6obgRbppMRVh9gzlglSNKhpWpMr8vqGEpIxbuPK0LjWHY+kEwSD3Pr9zq96dXh+hjQsSCTQ+/wqajHZyEkQNTFKUkTpMajGIsF06evShdllnJpP1eJrB82PFBXNGmR8Q4XjHVpOT9XmGINFk1JrbAzIfz8g8iIcVd13IucCWsU4hea0nLl2+sfhFu4XWOnDlDYns8+5XiCStnDEOfjkzL2Pv7CktO/ig8PPhHRXurcds6ETs4KGoJuUevhZcto6Lfk/Mw0AoFUZ6JN8FEVsMWHHDvob2g/qQ4akFDaw91P28kjsLcS4BHMhsqBaxuSlGlIvUzRBA2Q6sp+UjP6iV+HvEMNgVnCjA6MFlzjjHto=
