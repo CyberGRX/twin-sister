@@ -5,7 +5,7 @@ from unittest import TestLoader
 
 MAJOR_VERSION = 4
 MINOR_VERSION = 3
-PATCH_VERSION = 1
+PATCH_VERSION = 2
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
