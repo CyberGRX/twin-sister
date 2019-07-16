@@ -346,8 +346,8 @@ message = 'This goes only to the fake log'
 with dependency_context(supply_logging=True) as context:
   log = dependency(logging).getLogger(__name__)
   log.error(message)
-  # fake_log.stored_records is a list of logging.LogRecord objects
-  assert context.fake_log.stored_records[0].msg == message
+  # logging.stored_records is a list of logging.LogRecord objects
+  assert context.logging.stored_records[0].msg == message
 ```
 
 <a name="fake-filesystem-section"></a>
