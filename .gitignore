@@ -16,3 +16,4 @@ creds.sh
 /tmp
 
 .terraform
+.vscode
