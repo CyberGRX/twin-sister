@@ -28,7 +28,7 @@ from unittest import TestCase
 from expects import expect, equal
 import requests
 from twin_sister import open_dependency_context
-from twin_sister.fakes import EmptyFake, FunctionSpy
+from twin_sister.fakes import EndlessFake, FunctionSpy
 
 from post_something import post_something
 
@@ -37,7 +37,7 @@ class TestPostSomething(TestCase):
   def setUp(self):
       self.context = open_dependency_context()
       self.post_spy = FunctionSpy()
-      requests_stub = EmptyFake(pattern_obj=requests)
+      requests_stub = EndlessFake(pattern_obj=requests)
       requests_stub.post = self.post_spy
       self.context.inject(requests, requests_stub)
 
@@ -79,7 +79,7 @@ def post_something(content):
   - #### <a href="#fake-time-section">Fake time</a>
 - ### <a href="#doubles-section">Test doubles</a>
   - #### <a href="#mutable-object-section">MutableObject</a>
-  - #### <a href="#empty-fake-section">EmptyFake</a>
+  - #### <a href="#endless-fake-section">EndlessFake</a>
   - #### <a href="#empty-context-manager-section">empty_context_manager</a>
   - #### <a href="#fake-datetime-section">FakeDateTime</a>
   - #### <a href="#function-spy-section">FunctionSpy</a>
@@ -466,45 +466,45 @@ stub = MutableObject()
 stub.say_hello = lambda: 'hello, world'
 ```
 
-<a name="empty-fake-section"></a>
+<a name="endless-fake-section"></a>
 
-### EmptyFake ###
+### EndlessFake ###
 
-An extremely generic stub that aims to be a substitute for absolutely anything.  Its attributes are EmptyFake objects.  When it's called like a function, it returns another EmptyFake.
+An extremely generic stub that aims to be a substitute for absolutely anything.  Its attributes are EndlessFake objects.  When it's called like a function, it returns another EndlessFake.
 
-When invoked with no arguments, EmptyFake creates the most flexible fake possible:
-
-```
-from twin_sister.fakes import EmptyFake
-
-anything = EmptyFake()
-another_empty_fake = anything.spam
-yet_another_empty_fake = another_empty_fake(biggles=12)
-```
-
-It's possible to restrict an EmptyFake to attributes defined by some other object:
+When invoked with no arguments, EndlessFake creates the most flexible fake possible:
 
 ```
-stub_path = EmptyFake(pattern_obj=os.path)
-# The next line returns an EmptyFake because there is an os.path.join:
-an_empty_fake = stub_path.join
+from twin_sister.fakes import EndlessFake
+
+anything = EndlessFake()
+another_endless_fake = anything.spam
+yet_another_endless_fake = another_endless_fake(biggles=12)
+```
+
+It's possible to restrict an EndlessFake to attributes defined by some other object:
+
+```
+stub_path = EndlessFake(pattern_obj=os.path)
+# The next line returns an EndlessFake because there is an os.path.join:
+an_endless_fake = stub_path.join
 # The next line will raise AttributeError because there is no os.path.spam:
 stub_path.spam
 ```
 
-It's also possible to restrict an EmptyFake to attributes declared by a class:
+It's also possible to restrict an EndlessFake to attributes declared by a class:
 
 ```
-fake_string = EmptyFake(pattern_class=str)
-# The next line returns an EmptyFake because strings have attributes called "split"
-an_empty_fake = fake_string.split
+fake_string = EndlessFake(pattern_class=str)
+# The next line returns an EndlessFake because strings have attributes called "split"
+an_endless_fake = fake_string.split
 # The next will raise AttributeError because normal strings lack beans:
 fake_string.beans
 ```
 
 Important limitation: "declared by a class" means that the attribute appears in
 the class declaration.  If the attribute gets created by the initializer instead,
-then it's not declared by the class and EmptyFake will insist that the attribute
+then it's not declared by the class and EndlessFake will insist that the attribute
 does not exist.  If you need an attribute that gets created by the initializer,
 you're better off instantiating an object to use as a `pattern_obj`.
 
@@ -512,7 +512,7 @@ you're better off instantiating an object to use as a `pattern_obj`.
 
 ### empty_context_manager ###
 
-A context manager that does nothing and yields an EmptyFake, useful for preventing unwanted behavior like opening network connections.
+A context manager that does nothing and yields an EndlessFake, useful for preventing unwanted behavior like opening network connections.
 
 ```
 from twin_sister.fakes import empty_context_manager
@@ -522,10 +522,10 @@ from my_stuff import network_connection
 with dependency_context() as context:
   context.inject(network_connection, empty_context_manager)
   with dependency(network_connection)() as conn:
-     conn.send("I'm singing into an EmptyFake")
+     conn.send("I'm singing into an EndlessFake")
 ```
 
-A generic EmptyFake object will also serve as a context manager without complaints.
+A generic EndlessFake object will also serve as a context manager without complaints.
 
 
 <a name="fake-datetime-section"></a>
@@ -581,7 +581,7 @@ assert kwargs == {'expected': 'biggles'}
 
 ### MasterSpy ###
 
-The spy equivalent of EmptyFake, MasterSpy tracks every interaction and spawns
+The spy equivalent of EndlessFake, MasterSpy tracks every interaction and spawns
 more spies to track interactions with its attributes.
 
 ```

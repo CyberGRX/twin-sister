@@ -5,3 +5,5 @@ from .function_spy import FunctionSpy  # noqa: F401
 from .master_spy import MasterSpy  # noqa: F401
 from .mutable_object import MutableObject  # noqa: F401
 from .wrapper import Wrapper  # noqa: F401
+
+EndlessFake = EmptyFake
