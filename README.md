@@ -532,7 +532,7 @@ A generic EndlessFake object will also serve as a context manager without compla
 
 ### FakeDateTime ###
 
-A datetime.datetime stub that reports that reports a fixed time.
+A datetime.datetime stub that reports a fixed time.
 
 ```
 from twin_sister.fakes import FakeDateTime
