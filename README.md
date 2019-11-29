@@ -84,6 +84,7 @@ def post_something(content):
   - #### <a href="#fake-datetime-section">FakeDateTime</a>
   - #### <a href="#function-spy-section">FunctionSpy</a>
   - #### <a href="#master-spy-section">MasterSpy</a>
+  - #### <a href="#func-that-raises-section">func_that_raises</a>
 - ### <a href="#expects-matchers-section">Expects matchers</a>
   - #### <a href="#complain-section">complain</a>
   - #### <a href="#contain-all-items-section">contain_all_items_in</a>
@@ -606,6 +607,21 @@ assert kwargs['thing'] == 'SPAM'
 ```
 
 By default MasterSpy spawns spies only for attributes that are functions.
+
+
+<a name="func-that-raises-section"></a>
+
+### func_that_raises ###
+
+A function that accepts arbitrary arguments and raises a given exception.  This is useful for fault injection.
+
+```
+from twin_sister.expects_matchers import complain
+from twin_sister.fakes import func_that_raises
+
+e = RuntimeError('I tried to think but nothing happened.')
+expect(func_that_raises(e)).to(complain(e))
+```
 
 
 <a name="expects-matchers-section"></a>
