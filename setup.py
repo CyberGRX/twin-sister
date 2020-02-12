@@ -2,6 +2,7 @@ import os
 from setuptools import setup, find_packages
 from setuptools.command.test import test
 from unittest import TestLoader
+from unittest.runner import TextTestRunner
 
 MAJOR_VERSION = 4
 MINOR_VERSION = 7
@@ -18,9 +19,8 @@ class TestRunner(test):
         # If we perform this input at the top of the file, we get an
         # import error because we need to load this file to discover
         # dependenices.
-        from xmlrunner import XMLTestRunner
         tests = TestLoader().discover('tests', pattern='test_*.py')
-        runner = XMLTestRunner(output='reports')
+        runner = TextTestRunner()
         result = runner.run(tests)
         exit(0 if result.wasSuccessful() else 1)
 
