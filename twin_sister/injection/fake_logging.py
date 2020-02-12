@@ -32,6 +32,14 @@ class FakeLogging(Passthrough):
         logger.handlers = [self.StreamHandler()]
         return logger
 
+    def find_log_records(self, *, level=None, partial_text=None):
+        return [
+            rec for rec
+            in self.stored_records
+            if (
+                (level is None or rec.levelno == level)
+                and (partial_text is None or partial_text in rec.msg))]
+
     Logger = fake_logger
     getLogger = fake_logger
 

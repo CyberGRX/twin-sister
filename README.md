@@ -351,6 +351,17 @@ with dependency_context(supply_logging=True) as context:
   assert context.logging.stored_records[0].msg == message
 ```
 
+You can also find fake log records by level and/or partial text
+
+```
+error_records = context.logging.find_log_records(level=logging.INFO)
+cheesy_records = context.logging.find_log_records(partial_text='cheese')
+spammy_warnings = context.logging.find_log_records(
+    level=logging.WARNING, partial_text='SPAM')
+```
+
+Log records are <a href="https://docs.python.org/3/library/logging.html#logrecord-objects">`logging.LogRecord`</a> instances. 
+
 <a name="fake-filesystem-section"></a>
 
 ## Fake filesystem
