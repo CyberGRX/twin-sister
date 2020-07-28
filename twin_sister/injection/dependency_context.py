@@ -110,7 +110,8 @@ class DependencyContext:
         if content and text:
             raise TypeError('Content and text cannot both be specified')
         path, _ = self.os.path.split(filename)
-        self.os.makedirs(path, exist_ok=True)
+        if path:
+            self.os.makedirs(path, exist_ok=True)
         fd = self.os.open(filename, self.os.O_CREAT | self.os.O_WRONLY)
         if content or text:
             bytes_out = content or bytes(text, encoding='utf-8')

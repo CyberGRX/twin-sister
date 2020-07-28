@@ -17,3 +17,4 @@ creds.sh
 
 .terraform
 .vscode
+venv
