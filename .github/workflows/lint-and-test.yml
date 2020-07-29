@@ -1,4 +1,4 @@
-name: Lint and unit tests
+name: Lint and Test
 
 # Trigger the workflow on push or pull request
 on: [push, pull_request]
