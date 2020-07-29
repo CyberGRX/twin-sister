@@ -4,8 +4,8 @@ from setuptools.command.test import test
 from unittest import TestLoader
 from unittest.runner import TextTestRunner
 
-MAJOR_VERSION = 4
-MINOR_VERSION = 7
+MAJOR_VERSION = 0
+MINOR_VERSION = 0
 PATCH_VERSION = 1
 
 # Environment variable into which CI places the build ID

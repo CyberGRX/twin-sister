@@ -3,6 +3,11 @@ name: Lint and Test
 # Trigger the workflow on push or pull request
 on: [push, pull_request]
 
+branches-ignore:
+      # There is no need to test a push to master, because it has already
+      # been tested by a push to a feature branch 
+      - master
+
 jobs:
   build:
 
