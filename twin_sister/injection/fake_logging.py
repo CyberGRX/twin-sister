@@ -4,7 +4,6 @@ from .passthrough import Passthrough
 
 
 class FakeHandler(logging.Handler):
-
     def __init__(self, *, fake_module):
         super().__init__()
         self._fake_module = fake_module
@@ -14,14 +13,12 @@ class FakeHandler(logging.Handler):
 
 
 class FakeLogging(Passthrough):
-
     def __init__(self):
         super().__init__(target=logging)
         self.stored_records = []
 
-        logger = self.fake_logger('')
-        for name in (
-                'critical', 'error', 'exception', 'warning', 'info', 'debug'):
+        logger = self.fake_logger("")
+        for name in ("critical", "error", "exception", "warning", "info", "debug"):
             setattr(self, name, getattr(logger, name))
 
     def StreamHandler(self, *args, **kwargs):
@@ -34,11 +31,10 @@ class FakeLogging(Passthrough):
 
     def find_log_records(self, *, level=None, partial_text=None):
         return [
-            rec for rec
-            in self.stored_records
-            if (
-                (level is None or rec.levelno == level)
-                and (partial_text is None or partial_text in rec.msg))]
+            rec
+            for rec in self.stored_records
+            if ((level is None or rec.levelno == level) and (partial_text is None or partial_text in rec.msg))
+        ]
 
     Logger = fake_logger
     getLogger = fake_logger

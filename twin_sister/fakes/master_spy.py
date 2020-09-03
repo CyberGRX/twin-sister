@@ -5,7 +5,7 @@ from .wrapper import Wrapper
 
 
 def is_a_function(thing):
-    return '__call__' in dir(thing)
+    return "__call__" in dir(thing)
 
 
 class MasterSpy(Wrapper):
@@ -24,9 +24,7 @@ class MasterSpy(Wrapper):
         self.return_value_spies = []
 
     def __spawn(self, target):
-        return(self.__class__(
-            target=target,
-            affect_only_functions=not self._wrap_non_functions))
+        return self.__class__(target=target, affect_only_functions=not self._wrap_non_functions)
 
     def attribute_was_requested(self, name):
         return name in self.attribute_spies.keys()

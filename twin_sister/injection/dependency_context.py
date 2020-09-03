@@ -11,18 +11,16 @@ from twin_sister.injection.singleton_class import SingletonClass
 
 
 class DependencyContext:
-
-    def __init__(
-            self, *, parent=None, supply_env=False, supply_fs=False,
-            supply_logging=False):
+    def __init__(self, *, parent=None, supply_env=False, supply_fs=False, supply_logging=False):
         """
         parent -- Inherit dependencies injected into this context
         """
         if parent and (supply_env or supply_fs or supply_logging):
             raise ValueError(
-                'Cannot supply a new environment, filesystem, or logging '
-                'if a parent context exists.  '
-                'We inherit fakes from the parent.')
+                "Cannot supply a new environment, filesystem, or logging "
+                "if a parent context exists.  "
+                "We inherit fakes from the parent."
+            )
         self._attached_threads = []
         self._injected = []  # key/value tuples
         self._parent = parent
@@ -60,9 +58,8 @@ class DependencyContext:
         """
         thread_id = thread_object.ident
         if not thread_id:
-            raise RuntimeError('A running thread is required.')
-        DependencyRegistry.register(
-            context=self, thread_id=thread_id)
+            raise RuntimeError("A running thread is required.")
+        DependencyRegistry.register(context=self, thread_id=thread_id)
         self._attached_threads.append(thread_id)
 
     def close(self):
@@ -79,9 +76,7 @@ class DependencyContext:
         return dependency
 
     def inject(self, dependency, injected):
-        self._injected = [
-            (k, v) for k, v in self._injected
-            if k != dependency]
+        self._injected = [(k, v) for k, v in self._injected if k != dependency]
         self._injected.append((dependency, injected))
 
     def inject_as_class(self, dependency, injected):
@@ -108,22 +103,23 @@ class DependencyContext:
         text -- (str) Write this text content
         """
         if content and text:
-            raise TypeError('Content and text cannot both be specified')
+            raise TypeError("Content and text cannot both be specified")
         path, _ = self.os.path.split(filename)
         if path:
             self.os.makedirs(path, exist_ok=True)
         fd = self.os.open(filename, self.os.O_CREAT | self.os.O_WRONLY)
         if content or text:
-            bytes_out = content or bytes(text, encoding='utf-8')
+            bytes_out = content or bytes(text, encoding="utf-8")
             self.os.write(fd, bytes_out)
         self.os.close(fd)
 
     def _assert_fake_env(self):
         if self.os.environ is os.environ:
             raise RuntimeError(
-                'Refusing to change the real environment.  '
-                'To use set_env or unset_env, specify supply_env=True '
-                'when creating the context.')
+                "Refusing to change the real environment.  "
+                "To use set_env or unset_env, specify supply_env=True "
+                "when creating the context."
+            )
 
     def set_env(self, **kwargs):
         """
@@ -132,9 +128,7 @@ class DependencyContext:
           (e.g. set_env(spam='foo', eggs='bar')
         """
         self._assert_fake_env()
-        self.os.environ = dict(
-            self.os.environ,
-            **{k: str(v) for k, v in kwargs.items()})
+        self.os.environ = dict(self.os.environ, **{k: str(v) for k, v in kwargs.items()})
 
     def unset_env(self, key):
         """
@@ -144,13 +138,11 @@ class DependencyContext:
         self._assert_fake_env()
         del self.os.environ[key]
 
-    def create_time_controller(
-            self, target, daemon=True, **kwargs):
+    def create_time_controller(self, target, daemon=True, **kwargs):
         """
         Return a TimeController that inherits this context
         """
-        return ContextTimeController(
-            daemon=daemon, target=target, parent_context=self)
+        return ContextTimeController(daemon=daemon, target=target, parent_context=self)
 
     def spawn(self):
         """

@@ -18,3 +18,4 @@ creds.sh
 .terraform
 .vscode
 venv
+env

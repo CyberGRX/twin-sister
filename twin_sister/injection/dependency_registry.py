@@ -2,7 +2,6 @@ from threading import get_ident as get_thread_id
 
 
 class DependencyRegistry:
-
     @classmethod
     def current_context(cls):
         thread_id = get_thread_id()

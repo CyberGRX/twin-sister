@@ -34,6 +34,4 @@ class eventually(Matcher):
             match = self._expected._match(subject_result)
             if match[0]:
                 return match
-        return False, [f'It still returned {subject_result} after '
-                       f'{self._timeout} seconds.'] + match[1]
-
+        return False, [f"It still returned {subject_result} after " f"{self._timeout} seconds."] + match[1]

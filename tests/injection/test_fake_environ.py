@@ -8,7 +8,6 @@ from twin_sister.injection.dependency_context import DependencyContext
 
 
 class TestFakeEnviron(TestCase):
-
     def test_supplies_empty_environment_if_set(self):
         with dependency_context(supply_env=True):
             expect(dependency(os).environ).to(equal({}))
@@ -22,8 +21,8 @@ class TestFakeEnviron(TestCase):
             expect(dependency(os).environ).to(equal({}))
 
     def test_plays_nicely_with_fake_fs(self):
-        key = 'something_i_made_up'
-        value = 'Playdoh(tm)'
+        key = "something_i_made_up"
+        value = "Playdoh(tm)"
         with dependency_context(supply_env=True, supply_fs=True) as context:
             context.os.environ[key] = value
             expect(dependency(os).environ[key]).to(equal(value))
@@ -34,9 +33,8 @@ class TestFakeEnviron(TestCase):
 
     def test_incompatible_with_specifified_parent_context(self):
         try:
-            DependencyContext(
-                parent=DependencyContext(), supply_env=True)
-            assert False, 'No exception was raised'
+            DependencyContext(parent=DependencyContext(), supply_env=True)
+            assert False, "No exception was raised"
         except ValueError:
             pass
 
@@ -46,5 +44,5 @@ class TestFakeEnviron(TestCase):
             expect(dependency(os)).to(be(parent.os))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

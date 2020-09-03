@@ -1,5 +1,4 @@
 class FakeSingleton:
-
     def __init__(self, payload):
         self._payload = payload
 

@@ -7,9 +7,7 @@ from twin_sister.fakes import EmptyFake, empty_context_manager
 
 
 class TestEmptyContextManager(TestCase):
-
     def test_accepts_arbitrary_args_and_kwargs(self):
-
         def attempt():
             with empty_context_manager(7, spams=2):
                 pass
@@ -21,5 +19,5 @@ class TestEmptyContextManager(TestCase):
             expect(actual).to(be_a(EmptyFake))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

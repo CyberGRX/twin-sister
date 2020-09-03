@@ -1,19 +1,14 @@
 from unittest import TestCase, main
 
-from expects import \
-    expect, be, be_a, be_above, \
-    be_above_or_equal, be_below, be_below_or_equal, equal, \
-    have_length
+from expects import expect, be, be_a, be_above, be_above_or_equal, be_below, be_below_or_equal, equal, have_length
 
 from twin_sister.fakes import EmptyFake, MutableObject
 from twin_sister.expects_matchers import complain
 
 
 class TestEmptyFake(TestCase):
-
     def test_call_accepts_arbitary_args_and_kwargs(self):
-        expect(lambda: EmptyFake()(4, spams=1)).not_to(
-            complain(TypeError))
+        expect(lambda: EmptyFake()(4, spams=1)).not_to(complain(TypeError))
 
     def test_call_returns_fresh_fake(self):
         original = EmptyFake()
@@ -22,10 +17,9 @@ class TestEmptyFake(TestCase):
         expect(returned).not_to(be(original))
 
     def test_contains_returns_false(self):
-        expect('beans' in EmptyFake()).to(be(False))
+        expect("beans" in EmptyFake()).to(be(False))
 
     def test_can_be_context_manager(self):
-
         def attempt():
             with EmptyFake(1, beans=0):
                 pass
@@ -40,9 +34,8 @@ class TestEmptyFake(TestCase):
             expect(context).not_to(be(original))
 
     def test_delitem_is_present(self):
-
         def attempt():
-            del EmptyFake()['witch']
+            del EmptyFake()["witch"]
 
         expect(attempt).not_to(complain(TypeError))
 
@@ -63,7 +56,7 @@ class TestEmptyFake(TestCase):
 
     def test_getitem_returns_fresh_fake(self):
         original = EmptyFake()
-        returned = original['biggles']
+        returned = original["biggles"]
         expect(returned).to(be_a(EmptyFake))
         expect(returned).not_to(be(original))
 
@@ -100,23 +93,20 @@ class TestEmptyFake(TestCase):
         expect(EmptyFake()).to(have_length(0))
 
     def test_ne_returns_true_if_other_is_not_empty_fake(self):
-        assert EmptyFake() != 42, '__ne__ returned false for 42'
+        assert EmptyFake() != 42, "__ne__ returned false for 42"
 
     def test_ne_returns_false_if_other_is_empty_fake(self):
-        assert not(EmptyFake() != EmptyFake()), \
-            '__ne__ returned true for another EmptyFake'
+        assert not (EmptyFake() != EmptyFake()), "__ne__ returned true for another EmptyFake"
 
     def test_next_raises_stop_iteration(self):
-        expect(lambda: next(EmptyFake())).to(
-            complain(StopIteration))
+        expect(lambda: next(EmptyFake())).to(complain(StopIteration))
 
     def test_reversed_returns_self(self):
         fake = EmptyFake()
         expect(reversed(fake)).to(be(fake))
 
     def test_setitem_is_present(self):
-        expect(lambda: EmptyFake()['spam']).not_to(
-            complain(TypeError))
+        expect(lambda: EmptyFake()["spam"]).not_to(complain(TypeError))
 
     def test_str_returns_str(self):
         expect(str(EmptyFake())).to(be_a(str))
@@ -128,7 +118,7 @@ class TestEmptyFake(TestCase):
 
     def test_returns_empty_fake_when_obj_pattern_satisfied(self):
         pattern = MutableObject()
-        attr = 'yup'
+        attr = "yup"
         setattr(pattern, attr, None)
         fake = EmptyFake(pattern_obj=pattern)
         returned = getattr(fake, attr)
@@ -137,13 +127,12 @@ class TestEmptyFake(TestCase):
         expect(returned.spam).to(be_a(EmptyFake))
 
     def test_respects_hasattr_for_pattern_objects(self):
-
         class Pattern:
             def __getattr__(self, name):
-                return 'spam'
+                return "spam"
 
         fake = EmptyFake(pattern_obj=Pattern())
-        assert hasattr(fake, 'anything'), 'hasattr returned False'
+        assert hasattr(fake, "anything"), "hasattr returned False"
 
     def test_can_use_falsy_object_patterns(self):
         fake = EmptyFake(pattern_obj=set())
@@ -160,26 +149,21 @@ class TestEmptyFake(TestCase):
         expect(returned.spam).to(be_a(EmptyFake))
 
     def test_complains_about_attempt_to_set_pattern_obj_and_cls(self):
-        expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=1)).to(
-            complain(TypeError))
+        expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=1)).to(complain(TypeError))
 
     def test_check_for_both_patterns_not_fooled_by_falsy_objects(self):
-        expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=0)).to(
-            complain(TypeError))
+        expect(lambda: EmptyFake(pattern_cls=str, pattern_obj=0)).to(complain(TypeError))
 
     def test_getattr_does_not_invent_private_attributes(self):
-        expect(lambda: EmptyFake()._private).to(
-            complain(AttributeError))
+        expect(lambda: EmptyFake()._private).to(complain(AttributeError))
 
     def test_str_behaves_sensibly_for_subclass_that_neglects_super(self):
-
         class BadFake(EmptyFake):
-
             def __init__(self):
                 pass
 
         expect(str(BadFake())).to(be_a(str))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

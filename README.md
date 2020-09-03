@@ -51,7 +51,7 @@ class TestPostSomething(TestCase):
   def test_sends_specified_content(self):
       content = 'yadda yadda yadda'
       post_something(content)
-      expect(self.post_spy['data']).to(equal(content))  
+      expect(self.post_spy['data']).to(equal(content))
 ```
 
 `post_something.py`
@@ -360,7 +360,7 @@ spammy_warnings = context.logging.find_log_records(
     level=logging.WARNING, partial_text='SPAM')
 ```
 
-Log records are <a href="https://docs.python.org/3/library/logging.html#logrecord-objects">`logging.LogRecord`</a> instances. 
+Log records are <a href="https://docs.python.org/3/library/logging.html#logrecord-objects">`logging.LogRecord`</a> instances.
 
 <a name="fake-filesystem-section"></a>
 

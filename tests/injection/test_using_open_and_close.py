@@ -3,8 +3,7 @@ from unittest import TestCase, main
 
 from expects import expect, be_false, be_true
 
-from twin_sister import close_all_dependency_contexts, dependency, \
-    open_dependency_context
+from twin_sister import close_all_dependency_contexts, dependency, open_dependency_context
 from twin_sister.injection.singleton_class import SingletonClass
 
 
@@ -21,7 +20,6 @@ def touch_a_canary():
 
 
 class TestInjection(TestCase):
-
     def tearDown(self):
         close_all_dependency_contexts()
 
@@ -92,5 +90,5 @@ class TestInjection(TestCase):
         expect(my_canary.touched).to(be_false)
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

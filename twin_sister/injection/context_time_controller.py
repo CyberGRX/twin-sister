@@ -18,6 +18,7 @@ class ContextTimeController(Thread):
     target -- function to call in the thread
     parent_context -- inherit dependencies injected into this context
     """
+
     def __init__(self, target, *args, parent_context, **kwargs):
         super().__init__(target=target, **kwargs)
         self.exception_caught = None
@@ -31,10 +32,10 @@ class ContextTimeController(Thread):
     Raises a RuntimeError if the thread has not been started.
     Keyword arguments can be anything accepted by datetime.timedelta.
     """
+
     def advance(self, **kwargs):
         if not self.ident:
-            raise RuntimeError(
-                'The thread must be started before advancing time')
+            raise RuntimeError("The thread must be started before advancing time")
         self.fake_datetime.advance(**kwargs)
 
     def run(self):

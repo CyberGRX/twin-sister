@@ -30,18 +30,16 @@ class raise_ex(Matcher):
             caught = e
         if caught is None:
             outcome = False
-            msg = 'No exception was raised.'
+            msg = "No exception was raised."
         elif self._pat is None:
             outcome = True
-            msg = 'Caught (%s) %s' % (type(caught), caught)
+            msg = "Caught (%s) %s" % (type(caught), caught)
         elif self._pat.search(str(caught)):
             outcome = True
-            msg = 'Caught (%s) %s which matches pattern "%s"' % (
-                type(caught), caught, self._pat.pattern)
+            msg = 'Caught (%s) %s which matches pattern "%s"' % (type(caught), caught, self._pat.pattern)
         else:
             outcome = False
-            msg = 'Caught (%s) %s which does not match pattern "%s"' % (
-                type(caught), caught, self._pat.pattern)
+            msg = 'Caught (%s) %s which does not match pattern "%s"' % (type(caught), caught, self._pat.pattern)
         return outcome, [msg]
 
     def _match_object(self, func):
@@ -49,6 +47,6 @@ class raise_ex(Matcher):
             func()
         except Exception as caught:
             if caught == self._expected:
-                return True, ['Caught the specified exception']
+                return True, ["Caught the specified exception"]
             raise
-        return False, ['Nothing was raised']
+        return False, ["Nothing was raised"]

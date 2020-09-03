@@ -6,7 +6,6 @@ from twin_sister.injection.dependency_context import DependencyContext
 
 
 class TestDependencyContext(TestCase):
-
     def test_get_returns_original_if_nothing_injected(self):
         sut = DependencyContext()
         expected = object()
@@ -56,5 +55,5 @@ class TestDependencyContext(TestCase):
         expect(parent.get(key)).to(be(parent_value))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

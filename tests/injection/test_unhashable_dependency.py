@@ -7,7 +7,6 @@ from twin_sister import dependency, dependency_context
 
 
 class TestUnhashableDependency(TestCase):
-
     def test_can_replace_unhashable(self):
         with dependency_context() as context:
             thing = object()
@@ -16,12 +15,12 @@ class TestUnhashableDependency(TestCase):
 
     def test_survives_mutation(self):
         with dependency_context() as context:
-            dep = ['spam', 'eggs', 'sausage']
+            dep = ["spam", "eggs", "sausage"]
             thing = object()
             context.inject(dep, thing)
-            dep.append('spam')
+            dep.append("spam")
             expect(dependency(dep)).to(be(thing))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

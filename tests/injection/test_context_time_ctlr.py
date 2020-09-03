@@ -10,13 +10,13 @@ from twin_sister.injection.dependency_context import DependencyContext
 
 
 class TestContextTimeController(TestCase):
-
     def test_advance_complains_if_not_started(self):
         with dependency_context() as context:
             sut = context.create_time_controller(target=lambda: None)
 
             def attempt():
                 sut.advance(seconds=1)
+
             expect(attempt).to(raise_error(RuntimeError))
 
     def test_advance_advances_time_by_specified_delta(self):
@@ -35,14 +35,14 @@ class TestContextTimeController(TestCase):
             advance_delta = 42
             sut.advance(seconds=advance_delta)
             sleep(0.05)  # Give SUT a chance to cycle
-            expect(reported_time).to(
-                equal(start_time + timedelta(seconds=advance_delta)))
+            expect(reported_time).to(equal(start_time + timedelta(seconds=advance_delta)))
 
     def test_stores_exception(self):
-        exception_raised = Exception('intentional')
+        exception_raised = Exception("intentional")
 
         def boom():
             raise exception_raised
+
         with dependency_context() as context:
             sut = context.create_time_controller(target=boom, daemon=True)
             sut.start()
@@ -52,8 +52,7 @@ class TestContextTimeController(TestCase):
     def test_stores_return_value(self):
         expected = 42
         with dependency_context() as context:
-            sut = context.create_time_controller(
-                target=lambda: expected, daemon=True)
+            sut = context.create_time_controller(target=lambda: expected, daemon=True)
             sut.start()
             sut.join()
             expect(sut.value_returned).to(equal(expected))
@@ -70,11 +69,10 @@ class TestContextTimeController(TestCase):
 
     def test_inherits_origin_context(self):
         with dependency_context() as context:
-            key = 'dennis'
+            key = "dennis"
             value = 37
-            context.inject(key, 'something else')
-            ctl = context.create_time_controller(
-                target=lambda: dependency(key))
+            context.inject(key, "something else")
+            ctl = context.create_time_controller(target=lambda: dependency(key))
             context.inject(key, value)
             ctl.start()
             ctl.join()
@@ -100,7 +98,7 @@ class TestContextTimeController(TestCase):
 
     def test_inherits_arbitrary_key_from_parent_context(self):
         key = object()
-        parent_value = 'something'
+        parent_value = "something"
         child_value = None
 
         def fetch():
@@ -115,5 +113,5 @@ class TestContextTimeController(TestCase):
         expect(child_value).to(equal(parent_value))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

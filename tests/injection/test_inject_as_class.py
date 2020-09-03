@@ -10,7 +10,6 @@ class Thing:
 
 
 class TestInjectAsClass(TestCase):
-
     def test_as_class(self):
         injected = object()
         with dependency_context() as context:
@@ -19,5 +18,5 @@ class TestInjectAsClass(TestCase):
             expect(retrieved).to(be(injected))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

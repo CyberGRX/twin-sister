@@ -20,9 +20,7 @@ def touch_a_canary():
 
 
 class TestInjection(TestCase):
-
     def test_no_injection(self):
-
         class SingletonCanary:
             touched = False
 
@@ -93,5 +91,5 @@ class TestInjection(TestCase):
         expect(my_canary.touched).to(be_false)
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

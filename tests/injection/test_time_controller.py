@@ -8,12 +8,12 @@ from twin_sister import TimeController, dependency
 
 
 class TestTimeController(TestCase):
-
     def test_advance_complains_if_not_started(self):
         sut = TimeController(target=lambda: None)
 
         def attempt():
             sut.advance(seconds=1)
+
         expect(attempt).to(raise_error(RuntimeError))
 
     def test_advance_advances_time_by_specified_delta(self):
@@ -31,14 +31,14 @@ class TestTimeController(TestCase):
         advance_delta = 42
         sut.advance(seconds=advance_delta)
         sleep(0.05)  # Give SUT a chance to cycle
-        expect(reported_time).to(
-            equal(start_time + timedelta(seconds=advance_delta)))
+        expect(reported_time).to(equal(start_time + timedelta(seconds=advance_delta)))
 
     def test_stores_exception(self):
-        exception_raised = Exception('intentional')
+        exception_raised = Exception("intentional")
 
         def boom():
             raise exception_raised
+
         sut = TimeController(target=boom, daemon=True)
         sut.start()
         sut.join()
@@ -60,5 +60,5 @@ class TestTimeController(TestCase):
         expect(sut.daemon).to(be_false)
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

@@ -8,7 +8,6 @@ from twin_sister.fakes import EmptyFake, MasterSpy
 
 
 class TestMasterSpy(TestCase):
-
     def test_wraps_empty_fake_if_no_target_supplied(self):
         expect(MasterSpy().unwrap_spy_target()).to(be_a(EmptyFake))
 
@@ -30,26 +29,24 @@ class TestMasterSpy(TestCase):
 
     def test_saves_first_function_call(self):
         planted_args = (1, 4, 5)
-        planted_kwargs = {'spam': 32, 'eggs': object()}
+        planted_kwargs = {"spam": 32, "eggs": object()}
         stub = EmptyFake()
         stub.func = lambda *a, **k: None
         spy = MasterSpy(stub)
         spy.func(*planted_args, **planted_kwargs)
         spy.func(5, 7, 2, bruces=4, michaels=1)
-        expect(spy.attribute_spies['func'].call_history[0]).to(
-            equal((planted_args, planted_kwargs)))
+        expect(spy.attribute_spies["func"].call_history[0]).to(equal((planted_args, planted_kwargs)))
 
     def test_saves_last_function_call(self):
         planted_args = (1, 4, 5)
-        planted_kwargs = {'spam': 32, 'eggs': object()}
+        planted_kwargs = {"spam": 32, "eggs": object()}
         stub = EmptyFake()
         stub.func = lambda *a, **k: None
         spy = MasterSpy(stub)
         spy.func(5, 7, 2, bruces=4, michaels=1)
         spy.func()
         spy.func(*planted_args, **planted_kwargs)
-        expect(spy.attribute_spies['func'].call_history[-1]).to(
-            equal((planted_args, planted_kwargs)))
+        expect(spy.attribute_spies["func"].call_history[-1]).to(equal((planted_args, planted_kwargs)))
 
     def test_saves_first_return_value(self):
         values = range(3)
@@ -61,8 +58,7 @@ class TestMasterSpy(TestCase):
         spy = MasterSpy(func, affect_only_functions=False)
         for i in values:
             spy()
-        expect(spy.return_value_spies[0].unwrap_spy_target()).to(
-            equal(values[0]))
+        expect(spy.return_value_spies[0].unwrap_spy_target()).to(equal(values[0]))
 
     def test_saves_last_return_value(self):
         values = range(3)
@@ -74,8 +70,7 @@ class TestMasterSpy(TestCase):
         spy = MasterSpy(func, affect_only_functions=False)
         for i in values:
             spy()
-        expect(spy.return_value_spies[-1].unwrap_spy_target()).to(
-            equal(values[-1]))
+        expect(spy.return_value_spies[-1].unwrap_spy_target()).to(equal(values[-1]))
 
     def test_applies_affect_only_functions_flag_recursively(self):
         child = EmptyFake()
@@ -84,11 +79,10 @@ class TestMasterSpy(TestCase):
         parent.get_child = lambda: child
         parent_spy = MasterSpy(parent, affect_only_functions=False)
         parent_spy.get_child()
-        func_spy = parent_spy.attribute_spies['get_child']
+        func_spy = parent_spy.attribute_spies["get_child"]
         ret_spy = func_spy.return_value_spies[0]
         ret_spy.value
-        expect(ret_spy.attribute_spies.keys()).to(
-            contain('value'))
+        expect(ret_spy.attribute_spies.keys()).to(contain("value"))
 
     def test_call_returns_return_value(self):
         value = 27
@@ -100,26 +94,23 @@ class TestMasterSpy(TestCase):
         stub.func = lambda *a, **k: None
         spy = MasterSpy(stub)
         planted_args = (4, 5)
-        planted_kwargs = {'foo': 77, 'bar': 'soap'}
+        planted_kwargs = {"foo": 77, "bar": "soap"}
         spy.func(spam=1, eggs=2)
         spy.func(*planted_args, **planted_kwargs)
-        expect(spy.last_call_to('func')).to(
-            equal((planted_args, planted_kwargs)))
+        expect(spy.last_call_to("func")).to(equal((planted_args, planted_kwargs)))
 
     def test_last_call_to_raises_function_not_called(self):
         stub = EmptyFake()
         stub.func = lambda: None
         spy = MasterSpy(stub)
-        expect(lambda: spy.last_call_to('func')).to(
-            complain(FunctionNotCalled))
+        expect(lambda: spy.last_call_to("func")).to(complain(FunctionNotCalled))
 
     def test_attribute_requested_returns_true_if_tracking_and_requested(self):
         stub = EmptyFake()
         stub.thing = None
         spy = MasterSpy(stub, affect_only_functions=False)
         spy.thing
-        assert spy.attribute_was_requested('thing'), \
-            'Spy did not report that attribute was requested'
+        assert spy.attribute_was_requested("thing"), "Spy did not report that attribute was requested"
 
     def test_getattr_returns_requested_attribute(self):
         stub = EmptyFake()
@@ -131,14 +122,12 @@ class TestMasterSpy(TestCase):
         stub = EmptyFake()
         stub.thing = None
         spy = MasterSpy(stub, affect_only_functions=False)
-        assert not spy.attribute_was_requested('thing'), \
-            'Spy reported that attribute was requested'
+        assert not spy.attribute_was_requested("thing"), "Spy reported that attribute was requested"
 
     def test_unwrapp_spy_target_returns_unwrapped_target(self):
         target = 7
-        expect(MasterSpy(target).unwrap_spy_target()).to(
-            be(target))
+        expect(MasterSpy(target).unwrap_spy_target()).to(be(target))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

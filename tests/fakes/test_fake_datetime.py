@@ -7,14 +7,12 @@ from twin_sister.fakes import FakeDatetime
 
 
 class TestFakeDatetime(TestCase):
-
     def test_sets_fixed_time_if_none_specified(self):
         expect(FakeDatetime().fixed_time).to(be_a(datetime))
 
     def test_can_specify_fixed_time(self):
         now = datetime.now()
-        expect(FakeDatetime(fixed_time=now).fixed_time).to(
-            equal(now))
+        expect(FakeDatetime(fixed_time=now).fixed_time).to(equal(now))
 
     def test_now_returns_fixed_time(self):
         now = datetime.now()
@@ -27,9 +25,8 @@ class TestFakeDatetime(TestCase):
     def test_passes_other_dt_attributes_through(self):
         fake = FakeDatetime()
         for attr in dir(datetime):
-            if not(attr.startswith('_') or attr in ('now', 'utcnow')):
-                assert getattr(fake, attr) == getattr(datetime, attr), \
-                    f'{attr} did not pass through'
+            if not (attr.startswith("_") or attr in ("now", "utcnow")):
+                assert getattr(fake, attr) == getattr(datetime, attr), f"{attr} did not pass through"
 
     def test_can_advance_by_arbitrary_ms(self):
         fake = FakeDatetime()
@@ -70,5 +67,5 @@ class TestFakeDatetime(TestCase):
         expect(FakeDatetime().__call__).to(equal(datetime))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()

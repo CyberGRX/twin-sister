@@ -30,15 +30,15 @@ class TwoStageThread(Thread):
 
 
 class TestAttachContextToThread(TestCase):
-
     def test_sees_injected_dependency(self):
-        real_thing = 'real thing'
-        injected_thing = 'injected thing'
+        real_thing = "real thing"
+        injected_thing = "injected thing"
         thing_seen_by_thread = None
 
         def canary():
             nonlocal thing_seen_by_thread
             thing_seen_by_thread = dependency(real_thing)
+
         t = TwoStageThread(target=canary, daemon=True)
         t.start()
 
@@ -51,18 +51,21 @@ class TestAttachContextToThread(TestCase):
 
     def test_complains_if_thread_not_started(self):
         with dependency_context() as context:
+
             def attempt():
                 context.attach_to_thread(Thread(target=print))
+
             expect(attempt).to(raise_error(RuntimeError))
 
     def test_stops_seeing_injection_when_context_ends(self):
-        real_thing = 'real thing'
-        injected_thing = 'injected thing'
+        real_thing = "real thing"
+        injected_thing = "injected thing"
         thing_seen_by_thread = None
 
         def canary():
             nonlocal thing_seen_by_thread
             thing_seen_by_thread = dependency(real_thing)
+
         t = TwoStageThread(target=canary, daemon=True)
         t.start()
 
@@ -74,5 +77,5 @@ class TestAttachContextToThread(TestCase):
         expect(thing_seen_by_thread).to(be(real_thing))
 
 
-if '__main__' == __name__:
+if "__main__" == __name__:
     main()
