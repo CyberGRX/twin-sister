@@ -6,7 +6,7 @@ from unittest.runner import TextTestRunner
 
 MAJOR_VERSION = 4
 MINOR_VERSION = 7
-PATCH_VERSION = 2
+PATCH_VERSION = 3
 
 # Environment variable into which CI places the build ID
 # https://docs.gitlab.com/ce/ci/variables/
@@ -36,9 +36,17 @@ def version_number():
     return "%d.%d.%d.%d" % (MAJOR_VERSION, MINOR_VERSION, PATCH_VERSION, build)
 
 
+def requirements(file):
+    with open(file) as file_stream:
+        return [
+            line
+            for line in [requirement.strip() for requirement in file_stream.readlines()]
+            if line and not line.startswith("-") and not line.startswith("#")
+        ]
+
+
 with open("README.md", "r") as f:
     long_description = f.read()
-
 
 setup(
     name="twin_sister",
@@ -53,12 +61,6 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     exclude_package_data={"": ["tests"]},
-    install_requires=[
-        "expects>=0.8.0",
-        "pyfakefs>=3.4.3",
-        "twine>=1.9.1",
-        "unittest-xml-reporting>=2.1.1",
-        "wheel>=0.30.0",
-    ],
+    install_requires=requirements("requirements.txt"),
     cmdclass={"test": TestRunner},
 )

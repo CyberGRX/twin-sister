@@ -1,1 +1,5 @@
--e .
+expects>=0.8.0
+pyfakefs>=3.4.3
+twine>=1.9.1
+unittest-xml-reporting>=2.1.1
+wheel>=0.30.0
